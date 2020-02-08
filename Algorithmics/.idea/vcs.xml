@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
     <mapping directory="$PROJECT_DIR$/GitHubRepository" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/OnlineLessons/Git/Demos/MyApp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/OnlineLessons/Git/Demos/myApp2/sampleRepo" vcs="Git" />

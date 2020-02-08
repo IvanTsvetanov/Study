@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class TestSort {
     public static void main(String[] args) {
-        int N = 1000;
+        int N = 250000;
         double[] data = new double[N];
         for (int i = 0; i < N; i++)
             // Math.random returns a double type number greater than or equal to 0.0 and less than 1.0
@@ -20,6 +20,7 @@ public class TestSort {
 
         //Calls the first method
         InsertionSort(data1);
+        //Convert it to seconds by dividing by 1 000 000 000!
         double time = (System.nanoTime()-time_prev)/1000000000.0;
         System.out.println("Insertion Sort\nTime= " + time);
         time_prev = System.nanoTime();
@@ -36,9 +37,9 @@ public class TestSort {
         System.out.println("Quick Sort\nTime= " + time);
 
 
-        System.out.println("\tPresorted\tInsertion\t\t Shell\t\t Quick");
+        /*System.out.println("\tPresorted\tInsertion\t\t Shell\t\t Quick");
         for (int i=0; i<data.length; i++)
-            System.out.println(data[i] + " " + data1[i] + " " + data2[i] + " " + data3[i]);
+            System.out.println(data[i] + " " + data1[i] + " " + data2[i] + " " + data3[i]);*/
     }
 
 
@@ -74,6 +75,7 @@ public class TestSort {
         // increment will keep generating 1 repeatedly.)
         insertSort(a, 0, 1 );
     }
+
     public static void insertSort(double[] a, int start, int increment ) {
         int j, k;
         double temp;
@@ -97,6 +99,7 @@ public class TestSort {
             }
         }
     }
+
     public static double median(double[] a) {
         Arrays.sort(a);
         return a[a.length/2];

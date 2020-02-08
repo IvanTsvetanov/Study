@@ -1,17 +1,15 @@
+import java.math.BigDecimal;
+
 public class Main {
 
     public static void main(String[] args) {
+        double a = 0.041109199;
+        double b = 0.0468003;
 
-        double[] array = new double[100];
+        if(a > b) System.out.println("a > b");
+        else System.out.println("a < b");
 
-        for(int i = 0; i < 10; i++){
-            array[i] = Math.random();
-        }
 
-        double[] array1 = (double[])array.clone();
-        for(double a : array1) {
-            System.out.println(a);
-        }
-
+        //System.out.println( BigDecimal.valueOf(a).toPlainString());
     }
 }
