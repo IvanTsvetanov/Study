@@ -1,0 +1,8 @@
+Q1:
+
+(a)
+-Modify TestSort to measure the running time of different sizes of arrays.
+-Plot a graph of the average run time against the size of the input.
+(For this you will need to run the three algorithms for several arrays of the same size)
+-Note: Your answer should only include a brief summary of the modifications made to the code, and the graph mentioned above.
+
