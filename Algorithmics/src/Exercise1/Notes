@@ -148,10 +148,57 @@ Use the log-log graph to estimate the average-case time complexity of insertion 
 N^2.
 
 (d)
-Estimate the average running time of insertion sort on an array of size 1010
+Estimate the average running time of insertion sort on an array of size 10^10.
+
+Q2:
+(a)
+Write a new class to measure the average run time of this program for problems of
+size 12 to 17.  (1)
+Plot a graph of the logarithm of the run time against the problem size. (2)
+
+Note: Your answer should only include a brief description of your new class and
+the graph mentioned above
+
+(1)
+package Exercise2;
+
+public class GraphExtension {
+
+    public static void estimateTime() {
+
+        long time_prev = System.nanoTime();
+        double time;
+
+        for (int i = 12; i < 18; i++) {
+            Graph graph = new Graph(i, 0.5);
+            Colouring colouring = graph.bestColouring(3);
+            graph.show(colouring);
+            time = (System.nanoTime() - time_prev) / 1000000000.0;
+            System.out.println(i + " points time = " + time);
+            time_prev = System.nanoTime();
+        }
+
+    }
+}
 
 
+And the main method only contains:
+GraphExtension.estimateTime();
 
+(2)
+size    time
+12      0.4945714
+13      0.2329912
+14      0.2429714
+15      0.7763973
+16      2.0237999
+17      3.4983148
+
+See graph - Graph3
+
+(b)
+From your measurements, estimate the average-case time complexity of the graphcolouring solver.
+Explain your working in detail. Is the answer what you expected, and why?
 
 
 

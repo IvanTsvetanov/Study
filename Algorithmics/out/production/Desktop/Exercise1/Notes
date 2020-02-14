@@ -1,35 +1,5 @@
 My Notes:
 
-Insertion sort - Average case - Θ(N^2)
-Input   Time
-1000    0.0088055
-5000    0.041109199
-10000   0.0468003
-50000   1.913484701
-100000  5.8198953
-250000  28.044138899
-1000000 453.9983355
-
-Shell sort - Average case - Θ(N^2)?
-Input   Time
-1000    3.951E-4
-5000    0.002367
-10000   0.0053943
-50000   0.0091528
-100000  0.0195848
-250000  0.0421818
-1000000 0.4435409
-
-Quick sort - Average case - Θ(N log N)
-Input   Time
-1000    0.0015978
-5000    0.003007101
-10000   0.0050133
-50000   0.0126299
-100000  0.0214411
-250000  0.081605999
-1000000 0.1834096
-
 Q1:
 //https://www.viralpatel.net/java-convert-exponential-decimal-double-number/ - usefull
 
@@ -132,12 +102,99 @@ Input   Time
 10000   7.545E-4 = 0.0007545
 10000   5.541E-4 = 0.0005541
 
+Insertion sort - Average case - Θ(N^2)
+Input   Time
+1000    0.0088055
+5000    0.041109199
+10000   0.0468003
+50000   1.913484701
+100000  5.8198953
+250000  28.044138899
+1000000 453.9983355
+
+Shell sort - Average case - Θ(N log N)?
+Input   Time
+1000    3.951E-4
+5000    0.002367
+10000   0.0053943
+50000   0.0091528
+100000  0.0195848
+250000  0.0421818
+1000000 0.4435409
+
+Quick sort - Average case - Θ(N log N)
+Input   Time
+1000    0.0015978
+5000    0.003007101
+10000   0.0050133
+50000   0.0126299
+100000  0.0214411
+250000  0.081605999
+1000000 0.1834096
+
+Graph is made in word doc named "Graph1"
+
+(b)
+If a program runs in Θ(n^a), (that is, T(n) ≈ c ∗ n^a), then the logarithm of the run
+time grows linearly with the logarithm of the size of the input. Take the logarithm
+of the run time and array size for the previous data and re-plot your graph as a
+log-log graph.
+
+Graph is made in word doc named "Graph2"
+
+(c)
+Use the log-log graph to estimate the average-case time complexity of insertion sort.
+
+N^2.
+
+(d)
+Estimate the average running time of insertion sort on an array of size 10^10.
+
+Q2:
+(a)
+Write a new class to measure the average run time of this program for problems of
+size 12 to 17.  (1)
+Plot a graph of the logarithm of the run time against the problem size. (2)
+
+Note: Your answer should only include a brief description of your new class and
+the graph mentioned above
+
+(1)
+package Exercise2;
+
+public class GraphExtension {
+
+    public static void estimateTime() {
+
+        long time_prev = System.nanoTime();
+        double time;
+
+        for (int i = 12; i < 18; i++) {
+            Graph graph = new Graph(i, 0.5);
+            Colouring colouring = graph.bestColouring(3);
+            graph.show(colouring);
+            time = (System.nanoTime() - time_prev) / 1000000000.0;
+            System.out.println(i + " points time = " + time);
+            time_prev = System.nanoTime();
+        }
+
+    }
+}
 
 
+And the main method only contains:
+GraphExtension.estimateTime();
 
+(2)
+size    time
+12      0.4945714
+13      0.2329912
+14      0.2429714
+15      0.7763973
+16      2.0237999
+17      3.4983148
 
-
-
+See graph - graph3
 
 
 
