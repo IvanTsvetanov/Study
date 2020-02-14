@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class TestSort {
     public static void main(String[] args) {
-        int N = 250000;
+        int N = 1000000;
         double[] data = new double[N];
         for (int i = 0; i < N; i++)
             // Math.random returns a double type number greater than or equal to 0.0 and less than 1.0
