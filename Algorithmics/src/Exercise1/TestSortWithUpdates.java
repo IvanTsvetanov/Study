@@ -6,9 +6,9 @@ public class TestSortWithUpdates {
     public static void main(String[] args) {
         int N = 1000;
         //CREATE MORE VARIABLES TO STORE THE LENGTHS OF THE ARRAYS
-        int smallerN = 500;
-        int evenSmallerN = 100;
-        int biggerN = 2500;
+        int smallerN = 5000;
+        int evenSmallerN = 10000;
+        int biggerN = 50000;
 
         double[] data = new double[N];
         //CREATE MORE ARRAYS WITH THE MODIFIED SIZES
