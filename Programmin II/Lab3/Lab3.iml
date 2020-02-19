@@ -7,7 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org-netbeans-modules-javafx2-editor" level="application" />
-    <orderEntry type="library" name="bin" level="project" />
+    <orderEntry type="library" name="javafx-swt" level="project" />
   </component>
 </module>
