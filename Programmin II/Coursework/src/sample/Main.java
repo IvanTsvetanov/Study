@@ -15,6 +15,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -27,11 +29,11 @@ public class Main extends Application {
 
         //region Setting up the Canvas
         //Create the canvas and add it to its pane
-        Pane canvasPane = new GridPane();
-        Canvas canvas = new Canvas(450, 450);
+        GridPane canvasPane = new GridPane();
         canvasPane.prefWidthProperty().bind(mainPane.widthProperty());
         canvasPane.prefHeightProperty().bind(mainPane.heightProperty());
-        canvasPane.getChildren().add(canvas);
+        canvasPane.setAlignment(Pos.CENTER);
+
 
         //Set the border of the canvas
         canvasPane.setStyle("-fx-padding: 10;" +
@@ -126,9 +128,21 @@ public class Main extends Application {
         randHbox.setAlignment(Pos.CENTER);
         //endregion
 
-        //Graphics Context & Drawing
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        drawShapes(gc);
+        //region Draw Game Grid
+        int size = 3;
+        int width = 60;
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                Rectangle rec = new Rectangle(width, width);
+                rec.setStroke(Color.BLACK);
+                rec.setFill(Color.WHITE);
+                rec.relocate(i * width, j * width);
+                canvasPane.add(rec, i, j, 1, 1);
+                rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
+                rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+            }
+        }
+        //endregion
 
         //Adding to the Main Pane
         mainPane.add(canvasPane, 0, 0, 1, 1);
@@ -138,8 +152,8 @@ public class Main extends Application {
 
         //Set the scene and show it
         Scene scene = new Scene(mainPane, 670, 600);
-        primaryStage.setMinWidth(700);
-        primaryStage.setMinHeight(650);
+        primaryStage.setMinWidth(720);
+        primaryStage.setMinHeight(670);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
