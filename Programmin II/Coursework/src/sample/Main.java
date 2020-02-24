@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -33,7 +35,7 @@ import java.util.Map;
 
 public class Main extends Application {
 
-    private ArrayList<Button> buttons = new ArrayList<>();
+    private ArrayList<Button> playButtons = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -131,6 +133,7 @@ public class Main extends Application {
         changeFont.setMaxSize(150, 50);
 
         //Adding Dial Buttons
+
         //region Add Dial Buttons
         Button button1 = new Button("1");
         button1.setStyle(
@@ -220,11 +223,21 @@ public class Main extends Application {
         );
         button8.prefWidthProperty().bind(sideComponents.widthProperty());
         button8.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        playButtons.add(button1);
+        playButtons.add(button2);
+        playButtons.add(button3);
+        playButtons.add(button4);
+        playButtons.add(button5);
+        playButtons.add(button6);
+        playButtons.add(button7);
+        playButtons.add(button8);
         //endregion
 
         sideComponents.add(loadFile, 0, 0, 2, 1);
         sideComponents.add(loadText, 0, 1, 2, 1);
         sideComponents.add(changeFont, 0, 2, 2, 1);
+
         sideComponents.add(button1, 0, 3, 1, 1);
         sideComponents.add(button2, 1, 3, 1, 1);
         sideComponents.add(button3, 0, 4, 1, 1);
@@ -271,58 +284,19 @@ public class Main extends Application {
                 rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
                 rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
 
-                //region Listeners for Dial Buttons
-                //DOESNT WORK WHEN WE ADD ALL BUTTONS. MBY FFOR loop?
-                text.setOnMouseClicked(e -> {
-                    button1.setOnMouseClicked(f -> {
-                        text.setText(button1.getText());
-                    });
-                });
+                //region Handler for Playing Buttons
+                text.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
-                /*text.setOnMouseClicked(e -> {
-                    button2.setOnMouseClicked(f -> {
-                        text.setText(button2.getText());
-                    });
+                    for(Button button : playButtons) {
+                        button.setOnMouseClicked(f -> {
+                            text.setText(button.getText());
+                        });
+                    }
                 });
-
-                text.setOnMouseClicked(e -> {
-                    button3.setOnMouseClicked(f -> {
-                        text.setText(button3.getText());
-                    });
-                });
-
-                text.setOnMouseClicked(e -> {
-                    button4.setOnMouseClicked(f -> {
-                        text.setText(button4.getText());
-                    });
-                });
-
-                text.setOnMouseClicked(e -> {
-                    button5.setOnMouseClicked(f -> {
-                        text.setText(button5.getText());
-                    });
-                });
-
-                text.setOnMouseClicked(e -> {
-                    button6.setOnMouseClicked(f -> {
-                        text.setText(button6.getText());
-                    });
-                });
-
-                text.setOnMouseClicked(e -> {
-                    button7.setOnMouseClicked(f -> {
-                        text.setText(button7.getText());
-                    });
-                });
-
-                text.setOnMouseClicked(e -> {
-                    button8.setOnMouseClicked(f -> {
-                        text.setText(button8.getText());
-                    });
-                });*/
                 //endregion
             }
         }
+
         //endregion
 
         //Adding to the Main Pane
