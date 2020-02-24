@@ -116,34 +116,123 @@ public class Main extends Application {
 
         int minHeight = (int) (sideComponents.heightProperty().getValue() / 50);
         Button loadFile = new Button("Load Puzzle from File");
-        loadFile.setMinSize(150, 50);
+        loadFile.setMinSize(150, 30);
         loadFile.prefHeightProperty().bind(mainPane.heightProperty());
-        loadFile.setMaxSize(150, 150);
+        loadFile.setMaxSize(150, 50);
 
         Button loadText = new Button("Load Puzzle from Text");
-        loadText.setMinSize(150, 50);
+        loadText.setMinSize(150, 30);
         loadText.prefHeightProperty().bind(mainPane.heightProperty());
-        loadText.setMaxSize(150, 150);
+        loadText.setMaxSize(150, 50);
 
         Button changeFont = new Button("Change Font");
-        changeFont.setMinSize(150, 50);
+        changeFont.setMinSize(150, 30);
         changeFont.prefHeightProperty().bind(mainPane.heightProperty());
-        changeFont.setMaxSize(150, 150);
+        changeFont.setMaxSize(150, 50);
 
-        //TESTING
-        Button buttonTest = new Button("1");
-        buttonTest.setStyle(
+        //Adding Dial Buttons
+        //region Add Dial Buttons
+        Button button1 = new Button("1");
+        button1.setStyle(
                 "-fx-background-radius: 5em; " +
-                        "-fx-min-width: 10px; " +
-                        "-fx-min-height: 10px; " +
-                        "-fx-max-width: 10px; " +
-                        "-fx-max-height: 10px;"
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
         );
+        button1.prefWidthProperty().bind(sideComponents.widthProperty());
+        button1.prefHeightProperty().bind(sideComponents.heightProperty());
 
-        sideComponents.add(loadFile, 0, 0, 1, 1);
-        sideComponents.add(loadText, 0, 1, 1, 1);
-        sideComponents.add(changeFont, 0, 2, 1, 1);
-        sideComponents.add(buttonTest, 0, 3, 1, 1);
+
+        Button button2 = new Button("2");
+        button2.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button2.prefWidthProperty().bind(sideComponents.widthProperty());
+        button2.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button3 = new Button("3");
+        button3.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button3.prefWidthProperty().bind(sideComponents.widthProperty());
+        button3.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button4 = new Button("4");
+        button4.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button4.prefWidthProperty().bind(sideComponents.widthProperty());
+        button4.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button5 = new Button("5");
+        button5.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button5.prefWidthProperty().bind(sideComponents.widthProperty());
+        button5.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button6 = new Button("6");
+        button6.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button6.prefWidthProperty().bind(sideComponents.widthProperty());
+        button6.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button7 = new Button("7");
+        button7.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button7.prefWidthProperty().bind(sideComponents.widthProperty());
+        button7.prefHeightProperty().bind(sideComponents.heightProperty());
+
+        Button button8 = new Button("8");
+        button8.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 50px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-max-width: 65px; " +
+                        "-fx-max-height: 65px;"
+        );
+        button8.prefWidthProperty().bind(sideComponents.widthProperty());
+        button8.prefHeightProperty().bind(sideComponents.heightProperty());
+        //endregion
+
+        sideComponents.add(loadFile, 0, 0, 2, 1);
+        sideComponents.add(loadText, 0, 1, 2, 1);
+        sideComponents.add(changeFont, 0, 2, 2, 1);
+        sideComponents.add(button1, 0, 3, 1, 1);
+        sideComponents.add(button2, 1, 3, 1, 1);
+        sideComponents.add(button3, 0, 4, 1, 1);
+        sideComponents.add(button4, 1, 4, 1, 1);
+        sideComponents.add(button5, 0, 5, 1, 1);
+        sideComponents.add(button6, 1, 5, 1, 1);
+        sideComponents.add(button7, 0, 6, 1, 1);
+        sideComponents.add(button8, 1, 6, 1, 1);
 
         //Add randomly generate button
         HBox randHbox = new HBox();
@@ -177,18 +266,61 @@ public class Main extends Application {
 
                 canvasPane.add(stackPane, i, j, 1, 1);
 
-
                 text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 
                 rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
                 rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
 
+                //region Listeners for Dial Buttons
+                //DOESNT WORK WHEN WE ADD ALL BUTTONS. MBY FFOR loop?
                 text.setOnMouseClicked(e -> {
-                    buttonTest.setOnMouseClicked(f -> {
-                        text.setText(buttonTest.getText());
+                    button1.setOnMouseClicked(f -> {
+                        text.setText(button1.getText());
                     });
                 });
 
+                /*text.setOnMouseClicked(e -> {
+                    button2.setOnMouseClicked(f -> {
+                        text.setText(button2.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button3.setOnMouseClicked(f -> {
+                        text.setText(button3.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button4.setOnMouseClicked(f -> {
+                        text.setText(button4.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button5.setOnMouseClicked(f -> {
+                        text.setText(button5.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button6.setOnMouseClicked(f -> {
+                        text.setText(button6.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button7.setOnMouseClicked(f -> {
+                        text.setText(button7.getText());
+                    });
+                });
+
+                text.setOnMouseClicked(e -> {
+                    button8.setOnMouseClicked(f -> {
+                        text.setText(button8.getText());
+                    });
+                });*/
+                //endregion
             }
         }
         //endregion
