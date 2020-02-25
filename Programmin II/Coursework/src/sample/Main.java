@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -16,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -256,6 +258,7 @@ public class Main extends Application {
         //endregion
 
         //region Draw Game Grid
+        LogicFields logic = new LogicFields();
         int size = 4;
         int width = 60;
 
@@ -271,6 +274,7 @@ public class Main extends Application {
                 text.setAlignment(Pos.CENTER);
                 text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
                 text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+                logic.setGameField(text);
 
                 //Stacks the textfield on top of the rectangles
                 StackPane stackPane = new StackPane();
@@ -296,7 +300,6 @@ public class Main extends Application {
                 //endregion
             }
         }
-
         //endregion
 
         //Adding to the Main Pane
@@ -304,6 +307,19 @@ public class Main extends Application {
         mainPane.add(bottomComponents, 0, 1, 1, 1);
         mainPane.add(sideComponents, 1, 0, 1, 1);
         mainPane.add(randHbox, 1, 1, 1, 1);
+
+        //region Game logic implementation
+        //Get the entered value in the TextField
+        for(TextField text : logic.getTextFields()) {
+            text.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    System.out.println(text.getText());
+                }
+            });
+
+        }
+        //endregion
 
         //Set the scene and show it
         Scene scene = new Scene(mainPane, 670, 600);
