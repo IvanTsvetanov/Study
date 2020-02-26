@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/LogicFields.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Coursework/sample/LogicFields.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Main$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Coursework/sample/Main$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Coursework/sample/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/LogicFields.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/LogicFields.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Cluster$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Coursework/sample/Cluster$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Cluster.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Coursework/sample/Cluster.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Main$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Coursework/sample/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sample/Cluster.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Cluster.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/sample/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Main.java" afterDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
@@ -63,13 +64,14 @@
     <session id="157144804">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="9" />
+          <entry key="project.closed" value="10" />
           <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="4" />
-          <entry key="project.open.time.5" value="3" />
+          <entry key="project.open.time.5" value="4" />
+          <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="11" />
+          <entry key="project.opened" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -84,12 +86,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="16122" />
+          <entry key="java" value="18286" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="16122" />
+          <entry key="JAVA" value="18286" />
         </counts>
       </usages-collector>
     </session>
@@ -102,13 +104,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="317" column="41" lean-forward="true" selection-start-line="317" selection-start-column="41" selection-end-line="317" selection-end-column="41" />
+            <state relative-caret-position="239">
+              <caret line="285" column="54" lean-forward="true" selection-start-line="285" selection-start-column="54" selection-end-line="285" selection-end-column="54" />
               <folding>
-                <element signature="e#1441#1471#0" />
-                <element signature="e#2049#2103#0" />
-                <element signature="e#5039#5064#0" />
-                <element signature="e#11324#11360#0" />
+                <element signature="e#13052#13110#0" />
               </folding>
             </state>
           </provider>
@@ -133,16 +132,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/sample/Cluster.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="76" column="53" selection-start-line="76" selection-start-column="53" selection-end-line="76" selection-end-column="53" />
+            <state relative-caret-position="655">
+              <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="class#558:1105" />
-                <element signature="e#1757#1758#0" expanded="true" />
-                <element signature="e#1796#1797#0" expanded="true" />
                 <element signature="method#setClusterColor#0;class#Cluster#0" />
-                <element signature="e#1836#1837#0" expanded="true" />
-                <element signature="e#1896#1897#0" expanded="true" />
+                <element signature="e#1868#1869#0" expanded="true" />
+                <element signature="e#1903#1904#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -185,9 +181,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds">
-    <option name="x" value="949" />
-    <option name="width" value="2498" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1012" />
+    <option name="width" value="2435" />
     <option name="height" value="1407" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -348,16 +344,18 @@
       <workItem from="1582624113881" duration="1257000" />
       <workItem from="1582724914557" duration="6093000" />
       <workItem from="1582731131635" duration="2187000" />
+      <workItem from="1582736925100" duration="5530000" />
+      <workItem from="1582742573354" duration="1370000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42536000" />
+    <option name="totallyTimeSpent" value="49436000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="949" y="0" width="2498" height="1407" extended-state="0" />
+    <frame x="-8" y="-8" width="3456" height="1416" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.12961444" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.094228506" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" weight="0.32979977" />
       <window_info id="Designer" order="3" />
@@ -366,7 +364,7 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.21288295" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.21294852" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.24901807" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -377,7 +375,7 @@
       <window_info anchor="bottom" id="Changes" order="10" />
       <window_info anchor="bottom" id="Profiler" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32914376" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32839313" />
       <window_info anchor="bottom" id="Database Changes" order="14" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="15" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -416,12 +414,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/sample.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="jar://$PROJECT_DIR$/../openjfx/openjfx-11.0.2_windows-x64_bin-sdk/javafx-sdk-11.0.2/lib/src.zip!/javafx.base/javafx/event/EventHandler.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -455,6 +453,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/Cluster.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="655">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#setClusterColor#0;class#Cluster#0" />
+            <element signature="e#1868#1869#0" expanded="true" />
+            <element signature="e#1903#1904#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/LogicFields.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -469,31 +480,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/Cluster.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="76" column="53" selection-start-line="76" selection-start-column="53" selection-end-line="76" selection-end-column="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#558:1105" />
-            <element signature="e#1757#1758#0" expanded="true" />
-            <element signature="e#1796#1797#0" expanded="true" />
-            <element signature="method#setClusterColor#0;class#Cluster#0" />
-            <element signature="e#1836#1837#0" expanded="true" />
-            <element signature="e#1896#1897#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="317" column="41" lean-forward="true" selection-start-line="317" selection-start-column="41" selection-end-line="317" selection-end-column="41" />
+        <state relative-caret-position="239">
+          <caret line="285" column="54" lean-forward="true" selection-start-line="285" selection-start-column="54" selection-end-line="285" selection-end-column="54" />
           <folding>
-            <element signature="e#1441#1471#0" />
-            <element signature="e#2049#2103#0" />
-            <element signature="e#5039#5064#0" />
-            <element signature="e#11324#11360#0" />
+            <element signature="e#13052#13110#0" />
           </folding>
         </state>
       </provider>

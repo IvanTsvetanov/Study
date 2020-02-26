@@ -14,10 +14,11 @@ public class Cluster {
     //region Fields
     private ArrayList<TextField> cluster = new ArrayList<>();
     private boolean isSolved = false;
+    private String targerValue;
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
-    private static int bound = 16;
+    private static int bound = 15;
     private static List<String> colors = new ArrayList<>() {
         {
             add("lightblue");
@@ -32,7 +33,6 @@ public class Cluster {
             add("grey");
             add("khaki");
             add("yellowgreen");
-            add("wheat");
             add("slateblue");
             add("salmon");
             add("gold");
@@ -74,7 +74,7 @@ public class Cluster {
     }
 
     public void setClusterTargetValue(String value) {
-        TextField targetValue = new TextField(value);
+        targerValue = value;
     }
     //endregion
 }

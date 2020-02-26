@@ -30,21 +30,18 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class Main extends Application {
 
     private ArrayList<Button> playButtons = new ArrayList<>();
+    private ArrayList<Text> targetValues = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("MathDoku");
 
         GridPane mainPane = new GridPane();
-        mainPane.setGridLinesVisible(true);
 
         //region Setting up the Canvas
         //Create the canvas and add it to its pane
@@ -52,14 +49,6 @@ public class Main extends Application {
         canvasPane.prefWidthProperty().bind(mainPane.widthProperty());
         canvasPane.prefHeightProperty().bind(mainPane.heightProperty());
         canvasPane.setAlignment(Pos.CENTER);
-
-        //Set the border of the canvas
-        canvasPane.setStyle("-fx-padding: 10;" +
-                "-fx-border-width: 5;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: darkblue;");
-        //endregion
 
         //region Creating components to add to the Main Frame.
         GridPane bottomComponents = new GridPane();
@@ -268,21 +257,33 @@ public class Main extends Application {
                 Rectangle rec = new Rectangle(width, width);
                 rec.setStroke(Color.BLACK);
                 rec.setFill(Color.WHITE);
+                rec.setStrokeWidth(3);
+                rec.setStrokeType(StrokeType.CENTERED);
 
                 //Add the text areas
                 TextField text = new TextField("");
                 text.setAlignment(Pos.CENTER);
-                text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1.1));
-                text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1.1));
+                text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
+                text.maxHeightProperty().bind(canvasPane.heightProperty() .divide(size + 1));
                 logic.setGameField(text);
+
+                //Adding the target values
+                StackPane targetPane = new StackPane();
+                Text target = new Text();
+                target.setFont(Font.font("Verdana",FontWeight.BOLD, 20));
+                targetPane.getChildren().add(target);
+                targetPane.setMaxSize(10, 10);
+                targetValues.add(target);
 
                 //Stacks the textfield on top of the rectangles
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().add(rec);
+
+                stackPane.setAlignment(Pos.TOP_LEFT);
                 stackPane.getChildren().add(text);
+                stackPane.getChildren().add(targetPane);
 
                 canvasPane.add(stackPane, i, j, 1, 1);
-
                 text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 
                 rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
@@ -299,6 +300,20 @@ public class Main extends Application {
                 //endregion
             }
         }
+        //endregion
+
+        //region Set borders
+        canvasPane.setStyle("-fx-background-color: transparent, black;" +
+                        "-fx-background-insets:0, 5;" +
+                        "-fx-background-radius: 5;" +
+                        //"-fx-background-padding: 10;" +
+                        "-fx-padding: 10;" +
+                        "-fx-border-style: solid inside;" +
+                        "-fx-border-width: 5;" +
+                        "-fx-border-insets: 5;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-border-color: darkblue;");
+
         //endregion
 
         //Adding to the Main Pane
@@ -360,7 +375,31 @@ public class Main extends Application {
         logic.addClusters(cluster7);
         logic.addClusters(cluster8);
 
-        cluster1.setClusterTargetValue("8x");
+        // TO GET THE TEXT BOX (TARGET VALUE) YOU JUST NEED THE INDEX OF ONE OF THE TEXTFIELDS
+        //Target values
+        targetValues.get(0).setText("8*");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(3).setText("3");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(4).setText("1-");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(5).setText("5+");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(6).setText("2");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(7).setText("2/");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(12).setText("5+");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+
+        targetValues.get(10).setText("8+");
+        cluster1.setClusterTargetValue(targetValues.get(0).getText());
         //endregion
 
         //Run through all the text fields and add them to clusters
@@ -396,6 +435,14 @@ public class Main extends Application {
 
 //USEFUL
 /*
+        //Set the border of the canvas
+        /*canvasPane.setStyle("-fx-padding: 0;" +
+                "-fx-border-width: 10;" +
+                "-fx-border-insets: 5;" +
+                "-fx-border-radius: 50;" +
+                "-fx-border-color: black;" +
+                "-fx-background-color: darkblue");
+
 Button openNumPad = new Button("Open Number Pad");
         openNumPad.setMinSize(150, 50);
         openNumPad.prefHeightProperty().bind(mainPane.heightProperty());
