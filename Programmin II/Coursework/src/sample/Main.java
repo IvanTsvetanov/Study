@@ -272,8 +272,8 @@ public class Main extends Application {
                 //Add the text areas
                 TextField text = new TextField("");
                 text.setAlignment(Pos.CENTER);
-                text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
-                text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+                text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1.1));
+                text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1.1));
                 logic.setGameField(text);
 
                 //Stacks the textfield on top of the rectangles
@@ -290,7 +290,6 @@ public class Main extends Application {
 
                 //region Handler for Playing Buttons
                 text.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
                     for(Button button : playButtons) {
                         button.setOnMouseClicked(f -> {
                             text.setText(button.getText());
@@ -309,6 +308,66 @@ public class Main extends Application {
         mainPane.add(randHbox, 1, 1, 1, 1);
 
         //region Game logic implementation
+        //region Create the clusters // NEEDS REFACTORING FOR SURE
+        //Add the fields to the clusters
+        Cluster cluster1 = new Cluster();
+        cluster1.addField(logic.getTextFields().get(0));
+        cluster1.addField(logic.getTextFields().get(1));
+        cluster1.addField(logic.getTextFields().get(2));
+
+        Cluster cluster2 = new Cluster();
+        cluster2.addField(logic.getTextFields().get(3));
+
+        Cluster cluster3 = new Cluster();
+        cluster3.addField(logic.getTextFields().get(4));
+        cluster3.addField(logic.getTextFields().get(8));
+
+        Cluster cluster4 = new Cluster();
+        cluster4.addField(logic.getTextFields().get(5));
+        cluster4.addField(logic.getTextFields().get(9));
+
+        Cluster cluster5 = new Cluster();
+        cluster5.addField(logic.getTextFields().get(6));
+
+        Cluster cluster6 = new Cluster();
+        cluster6.addField(logic.getTextFields().get(7));
+        cluster6.addField(logic.getTextFields().get(11));
+
+        Cluster cluster7 = new Cluster();
+        cluster7.addField(logic.getTextFields().get(12));
+        cluster7.addField(logic.getTextFields().get(13));
+
+        Cluster cluster8 = new Cluster();
+        cluster8.addField(logic.getTextFields().get(10));
+        cluster8.addField(logic.getTextFields().get(14));
+        cluster8.addField(logic.getTextFields().get(15));
+
+        cluster1.setClusterColor();
+        cluster2.setClusterColor();
+        cluster3.setClusterColor();
+        cluster4.setClusterColor();
+        cluster5.setClusterColor();
+        cluster6.setClusterColor();
+        cluster7.setClusterColor();
+        cluster8.setClusterColor();
+
+        logic.addClusters(cluster1);
+        logic.addClusters(cluster2);
+        logic.addClusters(cluster3);
+        logic.addClusters(cluster4);
+        logic.addClusters(cluster5);
+        logic.addClusters(cluster6);
+        logic.addClusters(cluster7);
+        logic.addClusters(cluster8);
+
+        cluster1.setClusterTargetValue("8x");
+        //endregion
+
+        //Run through all the text fields and add them to clusters
+        /*for(int i = 0; i < logic.getTextFields().size(); i++) {
+            logic.getTextFields().get(i).setText(Integer.toString(i));
+        }*/
+
         //Get the entered value in the TextField
         for(TextField text : logic.getTextFields()) {
             text.textProperty().addListener(new ChangeListener<String>() {

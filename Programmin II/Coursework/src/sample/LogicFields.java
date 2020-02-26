@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -9,9 +8,13 @@ import java.util.ArrayList;
 Implements the game logic
  */
 public class LogicFields {
+    //region Fields
     private TextField gameField;
     private ArrayList<TextField> textFields = new ArrayList<>();
+    private ArrayList<Cluster> clusters = new ArrayList<>();
+    //endregion
 
+    //region Constructors
     public LogicFields() {
     }
 
@@ -19,7 +22,9 @@ public class LogicFields {
         this.gameField = gameField;
         textFields.add(gameField);
     }
+    //endregion
 
+    //region Getters and Setters
     public TextField getGameField() {
         return gameField;
     }
@@ -32,4 +37,17 @@ public class LogicFields {
     public ArrayList<TextField> getTextFields() {
         return this.textFields;
     }
+
+    public ArrayList<Cluster> getClusters() {
+        return clusters;
+    }
+
+    public void addClusters(Cluster cluster) {
+        this.clusters.add(cluster);
+    }
+    //endregion
+
+    //region Methods
+
+    //endregion
 }
