@@ -13,10 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -122,6 +119,7 @@ public class Main extends Application {
         changeFont.setMinSize(150, 30);
         changeFont.prefHeightProperty().bind(mainPane.heightProperty());
         changeFont.setMaxSize(150, 50);
+        //endregion
 
         //Adding Dial Buttons
 
@@ -264,13 +262,13 @@ public class Main extends Application {
                 TextField text = new TextField("");
                 text.setAlignment(Pos.CENTER);
                 text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
-                text.maxHeightProperty().bind(canvasPane.heightProperty() .divide(size + 1));
+                text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
                 logic.setGameField(text);
 
                 //Adding the target values
                 StackPane targetPane = new StackPane();
                 Text target = new Text();
-                target.setFont(Font.font("Verdana",FontWeight.BOLD, 20));
+                target.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
                 targetPane.getChildren().add(target);
                 targetPane.setMaxSize(10, 10);
                 targetValues.add(target);
@@ -278,7 +276,6 @@ public class Main extends Application {
                 //Stacks the textfield on top of the rectangles
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().add(rec);
-
                 stackPane.setAlignment(Pos.TOP_LEFT);
                 stackPane.getChildren().add(text);
                 stackPane.getChildren().add(targetPane);
@@ -291,7 +288,7 @@ public class Main extends Application {
 
                 //region Handler for Playing Buttons
                 text.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                    for(Button button : playButtons) {
+                    for (Button button : playButtons) {
                         button.setOnMouseClicked(f -> {
                             text.setText(button.getText());
                         });
@@ -302,18 +299,15 @@ public class Main extends Application {
         }
         //endregion
 
-        //region Set borders
+        //region Set Styles
         canvasPane.setStyle("-fx-background-color: transparent, black;" +
-                        "-fx-background-insets:0, 5;" +
-                        "-fx-background-radius: 5;" +
-                        //"-fx-background-padding: 10;" +
-                        "-fx-padding: 10;" +
-                        "-fx-border-style: solid inside;" +
-                        "-fx-border-width: 5;" +
-                        "-fx-border-insets: 5;" +
-                        "-fx-border-radius: 5;" +
-                        "-fx-border-color: darkblue;");
-
+                "-fx-background-insets:0, 5;" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 0;" +
+                "-fx-border-width: 35;" +
+                "-fx-border-insets: 0;" +
+                "-fx-border-radius: 5;" +
+                "-fx-border-color: brown;");
         //endregion
 
         //Adding to the Main Pane
@@ -381,25 +375,25 @@ public class Main extends Application {
         cluster1.setClusterTargetValue(targetValues.get(0).getText());
 
         targetValues.get(3).setText("3");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster2.setClusterTargetValue(targetValues.get(3).getText());
 
         targetValues.get(4).setText("1-");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster3.setClusterTargetValue(targetValues.get(4).getText());
 
         targetValues.get(5).setText("5+");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster4.setClusterTargetValue(targetValues.get(5).getText());
 
         targetValues.get(6).setText("2");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster5.setClusterTargetValue(targetValues.get(6).getText());
 
         targetValues.get(7).setText("2/");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster6.setClusterTargetValue(targetValues.get(7).getText());
 
         targetValues.get(12).setText("5+");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster7.setClusterTargetValue(targetValues.get(12).getText());
 
         targetValues.get(10).setText("8+");
-        cluster1.setClusterTargetValue(targetValues.get(0).getText());
+        cluster8.setClusterTargetValue(targetValues.get(10).getText());
         //endregion
 
         //Run through all the text fields and add them to clusters
@@ -407,12 +401,32 @@ public class Main extends Application {
             logic.getTextFields().get(i).setText(Integer.toString(i));
         }*/
 
-        //Get the entered value in the TextField
-        for(TextField text : logic.getTextFields()) {
+        //Update when a new value has been entered into a textfield
+        for (TextField text : logic.getTextFields()) {
             text.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    System.out.println(text.getText());
+                    ArrayList<Boolean> isFinished = new ArrayList<>();
+                    for (Cluster cluster : logic.getClusters()) {
+                        isFinished.add(cluster.checkIfSolved());
+                    }
+
+                    for(boolean a : isFinished) {
+                        System.out.print(a);
+                    }
+                    System.out.println();
+
+                    if(!isFinished.contains(false)) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                "It took you *ADD TIME HERE*");
+
+                        alert.setTitle("You have won!");
+                        alert.setHeaderText("!CONGRATULATIONS!");
+
+                        alert.showAndWait();
+
+                    }
+
                 }
             });
 

@@ -5,16 +5,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Cluster {
     //region Fields
     private ArrayList<TextField> cluster = new ArrayList<>();
     private boolean isSolved = false;
-    private String targerValue;
+    private String targetValue;
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
@@ -66,15 +63,84 @@ public class Cluster {
         int num = rand.nextInt(bound);
 
         String color = colors.get(num);
-        for(TextField text : cluster)
-        text.setStyle("-fx-background-color: " + color + ";");
+        for (TextField text : cluster)
+            text.setStyle("-fx-background-color: " + color + ";");
 
         colors.remove(num);
         bound--;
     }
 
     public void setClusterTargetValue(String value) {
-        targerValue = value;
+        this.targetValue = value;
+    }
+
+    public boolean checkIfSolved() {
+        int targetNumber;
+        String targetSign = null;
+
+        //Split up the target value
+        if (this.targetValue.length() == 2) {
+            targetNumber = Character.getNumericValue(this.targetValue.charAt(0));
+            targetSign = String.valueOf(this.targetValue.charAt(1));
+        } else {
+            targetNumber = Character.getNumericValue(this.targetValue.charAt(0));
+        }
+
+        //Hold the values of the cells
+        ArrayList<Integer> values = new ArrayList<>();
+        for (TextField text : this.cluster) {
+            if (text.getText() == null || text.getText().isEmpty()) {
+                values.add(Integer.parseInt("0"));
+            } else {
+                values.add(Integer.parseInt(text.getText()));
+            }
+        }
+
+        //Calculate if the target value has been reached
+        int tempValueHolder = 0;
+        if (targetSign != null) {
+            switch (targetSign) {
+                case "*":
+                    tempValueHolder = 1;
+                    for (Integer value : values) {
+                        tempValueHolder *= value;
+                    }
+                    break;
+                case "+":
+                    for (Integer value : values) {
+                        tempValueHolder += value;
+                    }
+                    break;
+                case "-":
+                    Collections.sort(values, Collections.reverseOrder());
+                    tempValueHolder = values.get(0);
+                    for (int i = 1; i < values.size(); i++) {
+                        tempValueHolder -= values.get(i);
+                    }
+                    break;
+                case "/":
+                    Collections.sort(values, Collections.reverseOrder());
+                    tempValueHolder = values.get(0);
+                    for (int i = 1; i < values.size(); i++) {
+                        if (values.get(i) == 0)
+                            tempValueHolder /= 1;
+                        else {
+                            tempValueHolder /= values.get(i);
+                        }
+                    }
+                    break;
+            }
+        } else {
+            tempValueHolder = values.get(0);
+        }
+
+        //Check if the target values have been reached
+        if (tempValueHolder == targetNumber) return true;
+        else return false;
+    }
+
+    public String getTargetValue() {
+        return targetValue;
     }
     //endregion
 }

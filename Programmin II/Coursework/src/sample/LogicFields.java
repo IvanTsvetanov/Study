@@ -45,6 +45,7 @@ public class LogicFields {
     public void addClusters(Cluster cluster) {
         this.clusters.add(cluster);
     }
+
     //endregion
 
     //region Methods
