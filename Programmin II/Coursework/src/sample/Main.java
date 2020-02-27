@@ -28,11 +28,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Main extends Application {
 
     private ArrayList<Button> playButtons = new ArrayList<>();
     private ArrayList<Text> targetValues = new ArrayList<>();
+    private int size = 4;
+    private int[][] valueHolder = new int[size][size];
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -120,8 +123,6 @@ public class Main extends Application {
         changeFont.prefHeightProperty().bind(mainPane.heightProperty());
         changeFont.setMaxSize(150, 50);
         //endregion
-
-        //Adding Dial Buttons
 
         //region Add Dial Buttons
         Button button1 = new Button("1");
@@ -221,7 +222,6 @@ public class Main extends Application {
         playButtons.add(button6);
         playButtons.add(button7);
         playButtons.add(button8);
-        //endregion
 
         sideComponents.add(loadFile, 0, 0, 2, 1);
         sideComponents.add(loadText, 0, 1, 2, 1);
@@ -235,6 +235,7 @@ public class Main extends Application {
         sideComponents.add(button6, 1, 5, 1, 1);
         sideComponents.add(button7, 0, 6, 1, 1);
         sideComponents.add(button8, 1, 6, 1, 1);
+        //endregion
 
         //Add randomly generate button
         HBox randHbox = new HBox();
@@ -246,7 +247,6 @@ public class Main extends Application {
 
         //region Draw Game Grid
         LogicFields logic = new LogicFields();
-        int size = 4;
         int width = 60;
 
         for (int i = 0; i < size; i++) {
@@ -259,7 +259,7 @@ public class Main extends Application {
                 rec.setStrokeType(StrokeType.CENTERED);
 
                 //Add the text areas
-                TextField text = new TextField("");
+                TextField text = new TextField();
                 text.setAlignment(Pos.CENTER);
                 text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
                 text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
@@ -285,6 +285,22 @@ public class Main extends Application {
 
                 rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
                 rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+
+                //region Get easier access to rows and cols
+                final int row = i;
+                final int col = j;
+                text.textProperty().addListener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        if (text.getText() == null || text.getText().isEmpty())
+                            valueHolder[col][row] = 0;
+
+                        else {
+                            valueHolder[col][row] = Integer.valueOf(text.getText());
+                        }
+                    }
+                });
+                //endregion
 
                 //region Handler for Playing Buttons
                 text.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
@@ -396,11 +412,7 @@ public class Main extends Application {
         cluster8.setClusterTargetValue(targetValues.get(10).getText());
         //endregion
 
-        //Run through all the text fields and add them to clusters
-        /*for(int i = 0; i < logic.getTextFields().size(); i++) {
-            logic.getTextFields().get(i).setText(Integer.toString(i));
-        }*/
-
+        //region Win Condition
         //Update when a new value has been entered into a textfield
         for (TextField text : logic.getTextFields()) {
             text.textProperty().addListener(new ChangeListener<String>() {
@@ -411,12 +423,7 @@ public class Main extends Application {
                         isFinished.add(cluster.checkIfSolved());
                     }
 
-                    for(boolean a : isFinished) {
-                        System.out.print(a);
-                    }
-                    System.out.println();
-
-                    if(!isFinished.contains(false)) {
+                    if (!isFinished.contains(false)) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                                 "It took you *ADD TIME HERE*");
 
@@ -424,13 +431,26 @@ public class Main extends Application {
                         alert.setHeaderText("!CONGRATULATIONS!");
 
                         alert.showAndWait();
-
                     }
-
                 }
             });
-
         }
+        //endregion
+
+        //region Button Show Mistakes
+        showMistakes.setOnMouseClicked(e -> {
+            int[] col = new int[size];
+            col = getColumn(valueHolder, 2);
+            for (int i : col) {
+                System.out.print(i);
+            }
+            System.out.println();
+            col = getRow(valueHolder, 0);
+            for (int i : col) {
+                System.out.print(i);
+            }
+        });
+        //endregion
         //endregion
 
         //Set the scene and show it
@@ -445,11 +465,26 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    int[] getColumn(int[][] matrix, int column) {
+        return IntStream.range(0, matrix.length)
+                .map(i -> matrix[i][column]).toArray();
+    }
+
+    int[] getRow(int[][] matrix, int row) {
+        return IntStream.range(0, matrix.length)
+                .map(j -> matrix[row][j]).toArray();
+    }
 }
 
 //USEFUL
 /*
-        //Set the border of the canvas
+        //Run through all the text fields and add them to clusters
+        /*for(int i = 0; i < logic.getTextFields().size(); i++) {
+            logic.getTextFields().get(i).setText(Integer.toString(i));
+        }*/
+
+//Set the border of the canvas
         /*canvasPane.setStyle("-fx-padding: 0;" +
                 "-fx-border-width: 10;" +
                 "-fx-border-insets: 5;" +

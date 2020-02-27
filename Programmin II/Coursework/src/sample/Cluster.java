@@ -15,18 +15,15 @@ public class Cluster {
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
-    private static int bound = 15;
+    private static int bound = 12;
     private static List<String> colors = new ArrayList<>() {
         {
             add("lightblue");
             add("orange");
-            add("yellow");
-            add("aliceblue");
             add("beige");
             add("blueviolet");
             add("brown");
             add("cyan");
-            add("darkgreen");
             add("grey");
             add("khaki");
             add("yellowgreen");
