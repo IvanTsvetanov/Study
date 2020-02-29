@@ -28,6 +28,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class Main extends Application {
@@ -36,6 +37,7 @@ public class Main extends Application {
     private ArrayList<Text> targetValues = new ArrayList<>();
     private int size = 4;
     private int[][] valueHolder = new int[size][size];
+    private TextField[][] textFieldHolder = new TextField[size][size];
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -287,6 +289,7 @@ public class Main extends Application {
                 rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
 
                 //region Get easier access to rows and cols
+                textFieldHolder[j][i] = text;
                 final int row = i;
                 final int col = j;
                 text.textProperty().addListener(new ChangeListener<String>() {
@@ -385,7 +388,6 @@ public class Main extends Application {
         logic.addClusters(cluster7);
         logic.addClusters(cluster8);
 
-        // TO GET THE TEXT BOX (TARGET VALUE) YOU JUST NEED THE INDEX OF ONE OF THE TEXTFIELDS
         //Target values
         targetValues.get(0).setText("8*");
         cluster1.setClusterTargetValue(targetValues.get(0).getText());
@@ -438,18 +440,81 @@ public class Main extends Application {
         //endregion
 
         //region Button Show Mistakes
-        showMistakes.setOnMouseClicked(e -> {
-            int[] col = new int[size];
-            col = getColumn(valueHolder, 2);
-            for (int i : col) {
-                System.out.print(i);
+        showMistakes.setOnMousePressed(e -> {
+            //Check the cols
+            int[] col;
+            for (int i = 0; i < size; i++) {
+                col = getColumn(valueHolder, i);
+                //Check if the col contains zeros (i.e. not fully populated)
+                boolean containsZero = IntStream.of(col).anyMatch(x -> x == 0);
+
+                if (containsZero == true) {
+                    break;
+                }
+
+                else if (duplicates(col) == true)
+                    for (int j = 0; j < size; j++) {
+                        textFieldHolder[j][i].setStyle("-fx-background-color: red;");
+                    }
             }
-            System.out.println();
-            col = getRow(valueHolder, 0);
-            for (int i : col) {
-                System.out.print(i);
+
+            //Check the rows
+            int[] row;
+            for (int i = 0; i < size; i++) {
+                row = getRow(valueHolder, i);
+
+                boolean containsZero = IntStream.of(row).anyMatch(x -> x == 0);
+
+                if (containsZero == true) {
+                    break;
+                }
+
+                else if (duplicates(row) == true)
+                    for (int j = 0; j < size; j++) {
+                        textFieldHolder[i][j].setStyle("-fx-background-color: red;");
+                    }
+            }
+
+            //Check the clusters
+            for (int z = 0; z < logic.getClusters().size(); z++) {
+                if (logic.getClusters().get(z).checkIfSolved() == false) {
+                    for (int i = 0; i < logic.getClusters().get(z).getCluster().size(); i++) {
+                        logic.getClusters().get(z).getCluster().get(i).setStyle("-fx-background-color: red;");
+                    }
+                }
             }
         });
+
+        //Return to the normal colors
+        showMistakes.setOnMouseReleased(e -> {
+            sleepForOneSecond();
+            for (int z = 0; z < logic.getClusters().size(); z++) {
+                logic.getClusters().get(z).setClusterColorNotRandom(logic.getClusters().get(z).getClusterColor());
+            }
+        });
+        //endregion
+
+        //region Button Clear Game Grid
+        clear.setOnMouseClicked(e -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to clear the board?");
+
+            alert.setTitle("Clear confirmation");
+            alert.setHeaderText("Are you sure?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                for (int i = 0; i < logic.getTextFields().size(); i++) {
+                    logic.getTextFields().get(i).setText("");
+                }
+            }
+        });
+        //endreion
+        //endregion
+
+        //region Button Undo
+
         //endregion
         //endregion
 
@@ -466,6 +531,24 @@ public class Main extends Application {
         launch(args);
     }
 
+    //region Helper Methods
+    void sleepForOneSecond() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    boolean duplicates(int[] array) {
+        Set<Integer> lump = new HashSet<Integer>();
+        for (int i : array) {
+            if (lump.contains(i)) return true;
+            lump.add(i);
+        }
+        return false;
+    }
+
     int[] getColumn(int[][] matrix, int column) {
         return IntStream.range(0, matrix.length)
                 .map(i -> matrix[i][column]).toArray();
@@ -475,6 +558,7 @@ public class Main extends Application {
         return IntStream.range(0, matrix.length)
                 .map(j -> matrix[row][j]).toArray();
     }
+    //endregion
 }
 
 //USEFUL

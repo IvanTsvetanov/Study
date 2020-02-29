@@ -12,6 +12,7 @@ public class Cluster {
     private ArrayList<TextField> cluster = new ArrayList<>();
     private boolean isSolved = false;
     private String targetValue;
+    private String clusterColor;
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
@@ -63,8 +64,15 @@ public class Cluster {
         for (TextField text : cluster)
             text.setStyle("-fx-background-color: " + color + ";");
 
+        setClusterColor("-fx-background-color: " + color + ";");
+
         colors.remove(num);
         bound--;
+    }
+
+    public void setClusterColorNotRandom(String color) {
+        for (TextField text : cluster)
+            text.setStyle(color);
     }
 
     public void setClusterTargetValue(String value) {
@@ -138,6 +146,14 @@ public class Cluster {
 
     public String getTargetValue() {
         return targetValue;
+    }
+
+    public String getClusterColor() {
+        return clusterColor;
+    }
+
+    public void setClusterColor(String clusterColor) {
+        this.clusterColor = clusterColor;
     }
     //endregion
 }
