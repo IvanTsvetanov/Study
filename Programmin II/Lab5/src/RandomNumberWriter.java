@@ -5,11 +5,12 @@ import java.util.Random;
 
 /*
 Writes random integers to files using byte-based & char-based streams.
-Compares the sizes of the files.
 
 In answer to the question:
 Q: "Compare the file sizes created by the two different approaches."
-A: The file sizes are the same, as expected.
+A: The file size of the byte stream is SMALLER than the file size of the char stream.
+That is because when we use the byte-based writer, we store the information added as bytes, not as chars.
+And the size of an int stored as bytes is smaller than the size of an int stored as a char.
  */
 
 public class RandomNumberWriter implements RandomIO {
@@ -18,7 +19,7 @@ public class RandomNumberWriter implements RandomIO {
     private long seed;
 
     //Used to generate a random number using the seed.
-    private Random random = new Random(seed);
+    private Random random = new Random();
 
     //Default Constructor.
     public RandomNumberWriter() {}
@@ -26,13 +27,14 @@ public class RandomNumberWriter implements RandomIO {
     //Custom Constructor which sets the seed.
     public RandomNumberWriter(long seed) {
         this.seed = seed;
+        random.setSeed(seed);
     }
 
-    //Writes 10 000 random integers to a file, using a char-based stream.
+    //Writes 10 000 random integers to a file using a char-based stream.
     @Override
-    public void writeRandomChars(String s) throws IOException {
+    public void writeRandomChars(String fileName) throws IOException {
         //Get the file ready.
-        File charFile = new File(s);
+        File charFile = new File(fileName);
 
         //Set up the writer.
         Writer writer = new FileWriter(charFile);
@@ -45,36 +47,39 @@ public class RandomNumberWriter implements RandomIO {
             valueHolder = Integer.toString(random.nextInt(100000));
 
             //Writes to the file.
-            writer.write(valueHolder);
+            writer.write(valueHolder + "\n");
         }
 
         //Close the stream.
         writer.close();
     }
 
-    //Writes 10 000 random integers to a file, using a byte-based stream.
+    //Writes 10 000 random integers to a file using a byte-based stream.
     @Override
-    public void writeRandomByte(String s) throws IOException {
+    public void writeRandomByte(String fileName) throws IOException {
         //Get the file ready.
-        File byteFile = new File(s);
+        File byteFile = new File(fileName);
 
         //Set up the stream.
-        OutputStream outputStream = new FileOutputStream(byteFile);
+        DataOutputStream outputStream = new DataOutputStream(new FileOutputStream(byteFile));
 
         //Generate the numbers and write them.
-        byte[] bytesHolder;
-        String valueHolder;
-
         for(int i = 0; i < 10000; i++) {
-            //Converts the integer to a String and stores it.
-            valueHolder = Integer.toString(random.nextInt(100000));
-
-            //Gets the bytes and writes them to the file.
-            bytesHolder = valueHolder.getBytes();
-            outputStream.write(bytesHolder);
+            //The method writes an int to the underlying output stream as four bytes.
+            outputStream.writeInt(random.nextInt(100000));
         }
 
         //Close the stream.
         outputStream.close();
+    }
+
+    public static void main(String[] args) {
+        RandomNumberWriter randomNumberWriter = new RandomNumberWriter(1);
+        try {
+            randomNumberWriter.writeRandomByte("ByteFile.txt");
+            randomNumberWriter.writeRandomChars("CharFile.txt");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
