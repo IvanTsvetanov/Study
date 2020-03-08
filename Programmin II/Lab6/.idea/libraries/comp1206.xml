@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="comp1206">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../LabLibraries/Lab6Lib/comp1206.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../LabLibraries/Lab6Lib/comp1206.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

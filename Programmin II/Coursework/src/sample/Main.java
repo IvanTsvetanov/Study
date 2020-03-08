@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Main extends Application {
 
@@ -310,6 +311,15 @@ public class Main extends Application {
                     for (Button button : playButtons) {
                         button.setOnMouseClicked(f -> {
                             text.setText(button.getText());
+
+                            //Check for valid input. The input depends on the size of the board.
+                            if (button.getText() != null)
+                                if (Integer.valueOf(text.getText()) > size) {
+                                    text.setText("");
+                                    new Alert(Alert.AlertType.ERROR,
+                                            "You cant enter that big of a number!")
+                                            .showAndWait();
+                                }
                         });
                     }
                 });
@@ -446,13 +456,7 @@ public class Main extends Application {
             for (int i = 0; i < size; i++) {
                 col = getColumn(valueHolder, i);
                 //Check if the col contains zeros (i.e. not fully populated)
-                boolean containsZero = IntStream.of(col).anyMatch(x -> x == 0);
-
-                if (containsZero == true) {
-                    break;
-                }
-
-                else if (duplicates(col) == true)
+                if (duplicates(col) == true)
                     for (int j = 0; j < size; j++) {
                         textFieldHolder[j][i].setStyle("-fx-background-color: red;");
                     }
@@ -462,14 +466,7 @@ public class Main extends Application {
             int[] row;
             for (int i = 0; i < size; i++) {
                 row = getRow(valueHolder, i);
-
-                boolean containsZero = IntStream.of(row).anyMatch(x -> x == 0);
-
-                if (containsZero == true) {
-                    break;
-                }
-
-                else if (duplicates(row) == true)
+                if (duplicates(row) == true)
                     for (int j = 0; j < size; j++) {
                         textFieldHolder[i][j].setStyle("-fx-background-color: red;");
                     }
@@ -541,6 +538,9 @@ public class Main extends Application {
     }
 
     boolean duplicates(int[] array) {
+        for (int j = 0; j < array.length; j++) {
+            if (array[j] == 0) array = removeTheElement(array, j);
+        }
         Set<Integer> lump = new HashSet<Integer>();
         for (int i : array) {
             if (lump.contains(i)) return true;
@@ -558,7 +558,41 @@ public class Main extends Application {
         return IntStream.range(0, matrix.length)
                 .map(j -> matrix[row][j]).toArray();
     }
-    //endregion
+
+    public static int[] removeTheElement(int[] arr, int index) {
+
+        // If the array is empty
+        // or the index is not in array range
+        // return the original array
+        if (arr == null
+                || index < 0
+                || index >= arr.length) {
+
+            return arr;
+        }
+
+        // Create another array of size one less
+        int[] anotherArray = new int[arr.length - 1];
+
+        // Copy the elements except the index
+        // from original array to the other array
+        for (int i = 0, k = 0; i < arr.length; i++) {
+
+            // if the index is
+            // the removal element index
+            if (i == index) {
+                continue;
+            }
+
+            // if the index is not
+            // the removal element index
+            anotherArray[k++] = arr[i];
+        }
+
+        // return the resultant array
+        return anotherArray;
+    }
+//endregion
 }
 
 //USEFUL

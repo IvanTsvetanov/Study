@@ -1,1 +1,2 @@
 https://i.stack.imgur.com/d1jQc.png
+https://www.wolframalpha.com/input/?i=plot+n%5E2%2C+n*log%28n%29%5E2%2C+n%3D0+to+10000
