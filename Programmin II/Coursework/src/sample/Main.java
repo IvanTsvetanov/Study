@@ -296,7 +296,10 @@ public class Main extends Application {
                 text.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                        if (text.getText() == null || text.getText().isEmpty())
+                        boolean numeric = true;
+                        numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                        if (text.getText() == null || text.getText().isEmpty() || text.getText() == "" || numeric == false)
                             valueHolder[col][row] = 0;
 
                         else {
@@ -432,6 +435,7 @@ public class Main extends Application {
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                     //Check for valid entry.
                     Integer enteredNumber = 0;
+                    boolean alertShown = false;
 
                     boolean numeric = true;
                     numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
@@ -439,19 +443,28 @@ public class Main extends Application {
                     //If it is a number, and it is in the range in the size,
                     //we keep the change to the text field.
                     if (numeric) {
-                        System.out.println("it is numeric");
                         enteredNumber = tryParse(text.getText());
                         if (enteredNumber > 0 && enteredNumber <= size) {
                             text.setText(enteredNumber.toString());
-                            System.out.println("WTF");
                         } else {
                             text.setText("");
-                            new Alert(Alert.AlertType.ERROR,
-                                    "You cant enter that big of a number man!")
-                                    .showAndWait();
+                            if(!alertShown) {
+                                new Alert(Alert.AlertType.ERROR,
+                                        "You cant enter that big of a number man in!")
+                                        .showAndWait();
+                                alertShown = true;
+                            }
                         }
                     }
-                    else text.setText("");
+                    else  {
+                        text.setText("");
+                        if(!alertShown) {
+                            new Alert(Alert.AlertType.ERROR,
+                                    "You cant enter that big of a number man out!")
+                                    .showAndWait();
+                            alertShown = true;
+                        }
+                    }
 
 
                     //Check for win condition
