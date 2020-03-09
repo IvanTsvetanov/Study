@@ -39,6 +39,7 @@ public class Main extends Application {
     private int size = 4;
     private int[][] valueHolder = new int[size][size];
     private TextField[][] textFieldHolder = new TextField[size][size];
+    private boolean isComplete = true;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -311,6 +312,8 @@ public class Main extends Application {
 
                 //region Handler for Playing Buttons
                 text.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    //Clear the text box when it has been clicked
+                    text.setText("");
                     for (Button button : playButtons) {
                         button.setOnMouseClicked(f -> {
                             text.setText(button.getText());
@@ -435,8 +438,8 @@ public class Main extends Application {
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                     //Check for valid entry.
                     Integer enteredNumber = 0;
-                    boolean alertShown = false;
 
+                    //Check if it is a numeric entry
                     boolean numeric = true;
                     numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
 
@@ -448,24 +451,13 @@ public class Main extends Application {
                             text.setText(enteredNumber.toString());
                         } else {
                             text.setText("");
-                            if(!alertShown) {
-                                new Alert(Alert.AlertType.ERROR,
-                                        "You cant enter that big of a number man in!")
-                                        .showAndWait();
-                                alertShown = true;
-                            }
-                        }
-                    }
-                    else  {
-                        text.setText("");
-                        if(!alertShown) {
                             new Alert(Alert.AlertType.ERROR,
-                                    "You cant enter that big of a number man out!")
+                                    "Invalid input! You cannot enter that big of a number!")
                                     .showAndWait();
-                            alertShown = true;
                         }
+                    } else {
+                        text.setText("");
                     }
-
 
                     //Check for win condition
                     ArrayList<Boolean> isFinished = new ArrayList<>();
@@ -473,7 +465,30 @@ public class Main extends Application {
                         isFinished.add(cluster.checkIfSolved());
                     }
 
-                    if (!isFinished.contains(false)) {
+                    //Check the cols
+                    isComplete = true;
+                    int[] col;
+                    for (int i = 0; i < size; i++) {
+                        col = getColumn(valueHolder, i);
+                        //Check if the col contains zeros (i.e. not fully populated)
+                        if (duplicates(col) == true) {
+                            isComplete = false;
+                            break;
+                        }
+                    }
+
+                    //Check the rows
+                    int[] row;
+                    for (int i = 0; i < size; i++) {
+                        row = getRow(valueHolder, i);
+                        if (duplicates(row) == true) {
+                            isComplete = false;
+                            break;
+                        }
+                    }
+
+
+                    if (!isFinished.contains(false) && isComplete == true) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                                 "It took you *ADD TIME HERE*");
 
@@ -494,20 +509,22 @@ public class Main extends Application {
             for (int i = 0; i < size; i++) {
                 col = getColumn(valueHolder, i);
                 //Check if the col contains zeros (i.e. not fully populated)
-                if (duplicates(col) == true)
+                if (duplicates(col) == true) {
                     for (int j = 0; j < size; j++) {
                         textFieldHolder[j][i].setStyle("-fx-background-color: red;");
                     }
+                }
             }
 
             //Check the rows
             int[] row;
             for (int i = 0; i < size; i++) {
                 row = getRow(valueHolder, i);
-                if (duplicates(row) == true)
+                if (duplicates(row) == true) {
                     for (int j = 0; j < size; j++) {
                         textFieldHolder[i][j].setStyle("-fx-background-color: red;");
                     }
+                }
             }
 
             //Check the clusters
