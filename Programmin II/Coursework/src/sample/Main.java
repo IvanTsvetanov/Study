@@ -328,7 +328,7 @@ public class Main extends Application {
         }
         //endregion
 
-        //region Set Styles
+        //region Set Style of Game Grid
         canvasPane.setStyle("-fx-background-color: transparent, black;" +
                 "-fx-background-insets:0, 5;" +
                 "-fx-background-radius: 10;" +
@@ -424,12 +424,37 @@ public class Main extends Application {
         cluster8.setClusterTargetValue(targetValues.get(10).getText());
         //endregion
 
-        //region Win Condition
+        //region Win Condition & Proper Keyboard Input.
         //Update when a new value has been entered into a textfield
         for (TextField text : logic.getTextFields()) {
             text.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    //Check for valid entry.
+                    Integer enteredNumber = 0;
+
+                    boolean numeric = true;
+                    numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                    //If it is a number, and it is in the range in the size,
+                    //we keep the change to the text field.
+                    if (numeric) {
+                        System.out.println("it is numeric");
+                        enteredNumber = tryParse(text.getText());
+                        if (enteredNumber > 0 && enteredNumber <= size) {
+                            text.setText(enteredNumber.toString());
+                            System.out.println("WTF");
+                        } else {
+                            text.setText("");
+                            new Alert(Alert.AlertType.ERROR,
+                                    "You cant enter that big of a number man!")
+                                    .showAndWait();
+                        }
+                    }
+                    else text.setText("");
+
+
+                    //Check for win condition
                     ArrayList<Boolean> isFinished = new ArrayList<>();
                     for (Cluster cluster : logic.getClusters()) {
                         isFinished.add(cluster.checkIfSolved());
@@ -591,6 +616,18 @@ public class Main extends Application {
 
         // return the resultant array
         return anotherArray;
+    }
+
+    public int tryParse(String value, int defaultVal) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultVal;
+        }
+    }
+
+    public int tryParse(String value) {
+        return tryParse(value, 0);
     }
 //endregion
 }

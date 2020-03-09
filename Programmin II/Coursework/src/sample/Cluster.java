@@ -94,10 +94,17 @@ public class Cluster {
         //Hold the values of the cells
         ArrayList<Integer> values = new ArrayList<>();
         for (TextField text : this.cluster) {
-            if (text.getText() == null || text.getText().isEmpty()) {
-                values.add(Integer.parseInt("0"));
-            } else {
-                values.add(Integer.parseInt(text.getText()));
+            boolean numeric = true;
+            numeric = text.getText().matches("-?\\d+(\\.\\d+)?");;
+
+            //If it is a number, and it is in the range in the size,
+            //we keep the change to the text field.
+            if(numeric) {
+                if (text.getText() == null || text.getText().isEmpty()) {
+                    values.add(Integer.parseInt("0"));
+                } else {
+                    values.add(Integer.parseInt(text.getText()));
+                }
             }
         }
 
