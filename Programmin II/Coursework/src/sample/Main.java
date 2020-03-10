@@ -492,7 +492,6 @@ public class Main extends Application {
                         }
                     }
 
-
                     if (!isFinished.contains(false) && isComplete == true) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                                 "It took you *ADD TIME HERE*");
@@ -589,33 +588,48 @@ public class Main extends Application {
                 text.setText("");
             }
 
-            //See how big is the grid (NxN).
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(path));
-                int lines = 0;
-                while (reader.readLine() != null) lines++;
-                size = lines;
-                reader.close();
+            //See how big is the grid (NxN). Find the max number of a textfield.
+            try (Scanner scanner = new Scanner(new File(path))) {
+                //Work through every line in the given text file to create the game grid. (DUPLICATE CODE BELOW).
+                while (scanner.hasNext()) {
+                    //Split the input line into target value and textfields.
+                    String line = scanner.nextLine();
+                    String[] valueAndFields = line.split(" ", 2);
+                    String targetValue = valueAndFields[0];
+                    String textFields = valueAndFields[1];
+                    //Get the max value.
+                    String[] textField = textFields.split(",");
+                    int[] array = Arrays.asList(textField).stream().mapToInt(Integer::parseInt).toArray();
+                    int max = getMax(array);
+                    if(size < max) size = max;
+                }
             } catch (Exception f) {
                 f.printStackTrace();
             }
+            size = (int) Math.sqrt(Double.valueOf(size));
 
-            //Draw the game grid anew
+            //Initiate the holders with the new size.
+            textFieldHolder = new TextField[size][size];
+            valueHolder = new int[size][size];
+
+            //region Draw the game grid anew
             canvasPane.getChildren().clear();
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     //Add the rectangles
-                    Rectangle rec = new Rectangle(width, width);
+                    Rectangle rec = new Rectangle(60, 60);
                     rec.setStroke(Color.BLACK);
                     rec.setFill(Color.WHITE);
                     rec.setStrokeWidth(3);
                     rec.setStrokeType(StrokeType.CENTERED);
+                    rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 2));
+                    rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 2));
 
                     //Add the text areas
                     TextField text = new TextField();
                     text.setAlignment(Pos.CENTER);
-                    text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
-                    text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+                    text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 2));
+                    text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 2));
                     logic.setGameField(text);
 
                     //Adding the target values
@@ -635,9 +649,6 @@ public class Main extends Application {
 
                     canvasPane.add(stackPane, i, j, 1, 1);
                     text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
-
-                    rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
-                    rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
 
                     //region Get easier access to rows and cols
                     textFieldHolder[j][i] = text;
@@ -681,8 +692,41 @@ public class Main extends Application {
                     //endregion
                 }
             }
+            //endregion
 
-            //Get the text from the file.
+            //region Check for proper keyboard input
+            for (TextField text : logic.getTextFields()) {
+                text.textProperty().addListener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        //Check for valid entry.
+                        Integer enteredNumber = 0;
+
+                        //Check if it is a numeric entry
+                        boolean numeric = true;
+                        numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                        //If it is a number, and it is in the range in the size,
+                        //we keep the change to the text field.
+                        if (numeric) {
+                            enteredNumber = tryParse(text.getText());
+                            if (enteredNumber > 0 && enteredNumber <= size) {
+                                text.setText(enteredNumber.toString());
+                            } else {
+                                text.setText("");
+                                new Alert(Alert.AlertType.ERROR,
+                                        "Invalid input! You cannot enter that big of a number!")
+                                        .showAndWait();
+                            }
+                        } else {
+                            text.setText("");
+                        }
+                    }
+                });
+            }
+            //endregion
+
+            //Get the game info from the file.
             try (Scanner scanner = new Scanner(new File(path))) {
                 //Work through every line in the given text file to create the game grid.
                 while (scanner.hasNext()) {
@@ -690,7 +734,6 @@ public class Main extends Application {
                     Cluster cluster = new Cluster();
                     logic.getClusters().add(cluster);
 
-                    //Split the input line into target value and textfields.
                     String line = scanner.nextLine();
                     String[] valueAndFields = line.split(" ", 2);
                     String targetValue = valueAndFields[0];
@@ -709,9 +752,6 @@ public class Main extends Application {
                     //Set the target values.
                     targetValues.get(Integer.valueOf(textField[0]) - 1).setText(targetValue);
                     cluster.setClusterTargetValue(targetValues.get(Integer.valueOf(textField[0])).getText());
-
-                    //Read the next line.
-                    scanner.nextLine();
                 }
 
             } catch (FileNotFoundException f) {
@@ -809,6 +849,16 @@ public class Main extends Application {
 
     public int tryParse(String value) {
         return tryParse(value, 0);
+    }
+
+    public static int getMax(int[] inputArray){
+        int maxValue = inputArray[0];
+        for(int i=1;i < inputArray.length;i++){
+            if(inputArray[i] > maxValue){
+                maxValue = inputArray[i];
+            }
+        }
+        return maxValue;
     }
 //endregion
 }
