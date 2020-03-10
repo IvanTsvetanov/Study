@@ -16,21 +16,53 @@ public class Cluster {
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
-    private static int bound = 12;
+    private static int clusterColorPointer = 0;
+    private static int bound = 20;
     private static List<String> colors = new ArrayList<>() {
         {
+            //Starting from 1st, get every 4th element.
+            //When you get to the end, start from two,
+            //and get every fifth element.
+            //When you get to the end, start from three,
+            //and get every sixth element.
+            add("darkgray");
+            add("grey");
+            add("lightgray");
+
+            add("darkblue");
+            add("blue");
             add("lightblue");
+
+            add("darkgreen");
+            add("green");
+            add("lightgreen");
+
+            add("orangered");
+            add("orange");
+            add("darkorange");
+
+            add("DARKGOLDENROD");
+            add("yellow");
+            add("lightyellow");
+
+            add("mediumpurple");
+            add("indigo");
+            add("purple");
+
+            add("deeppink");
+            add("pink");
+            add("lightpink");
+            /*add("lightblue");
             add("orange");
             add("beige");
             add("blueviolet");
             add("brown");
             add("cyan");
-            add("grey");
             add("khaki");
             add("yellowgreen");
             add("slateblue");
             add("salmon");
-            add("gold");
+            add("gold");*/
         }
     };
     //endregion
@@ -58,6 +90,65 @@ public class Cluster {
 
     //text.setStyle("-fx-background-color: ;");
     public void setClusterColor() {
+        //Check for the base cases
+        if(clusterColorPointer == 0) {
+            String color = colors.get(0);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            clusterColorPointer+=3;
+        }
+
+        else if(clusterColorPointer == 1) {
+            String color = colors.get(1);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            clusterColorPointer+=3;
+        }
+
+        else if(clusterColorPointer == 2) {
+            String color = colors.get(2);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            clusterColorPointer+=3;
+        }
+
+        else if(clusterColorPointer % 3 == 0) {
+            String color = colors.get(clusterColorPointer);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            if(clusterColorPointer == colors.size()-3) clusterColorPointer = 1;
+            else {
+                clusterColorPointer+=3;
+            }
+        }
+
+        else if((clusterColorPointer - 1) % 3 == 0) {
+            String color = colors.get(clusterColorPointer);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            if(clusterColorPointer == colors.size()-2) clusterColorPointer = 2;
+            else {
+                clusterColorPointer+=3;
+            }
+        }
+
+        else if((clusterColorPointer - 2) % 3 == 0) {
+            String color = colors.get(clusterColorPointer);
+            for (TextField text : cluster)
+                text.setStyle("-fx-background-color: " + color + ";");
+            setClusterColor("-fx-background-color: " + color + ";");
+            if(clusterColorPointer == colors.size()-1) clusterColorPointer = 0;
+            else {
+                clusterColorPointer+=3;
+            }
+        }
+
+        /*
         int num = rand.nextInt(bound);
 
         String color = colors.get(num);
@@ -67,7 +158,7 @@ public class Cluster {
         setClusterColor("-fx-background-color: " + color + ";");
 
         colors.remove(num);
-        bound--;
+        bound--;*/
     }
 
     public void setClusterColorNotRandom(String color) {

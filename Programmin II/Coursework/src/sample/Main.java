@@ -24,9 +24,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -567,6 +572,152 @@ public class Main extends Application {
 
         //region Button Undo
 
+        //endregion
+
+        //region Button Load from File
+        loadFile.setOnMouseClicked(e -> {
+            //Open the text file.
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            File workFile = fileChooser.showOpenDialog(primaryStage);
+            String path = workFile.getAbsolutePath();
+
+            //Clear the game logic from the loaded by default example.
+            logic.getClusters().clear();
+            logic.getTextFields().clear();
+            for (Text text : targetValues) {
+                text.setText("");
+            }
+
+            //See how big is the grid (NxN).
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(path));
+                int lines = 0;
+                while (reader.readLine() != null) lines++;
+                size = lines;
+                reader.close();
+            } catch (Exception f) {
+                f.printStackTrace();
+            }
+
+            //Draw the game grid anew
+            canvasPane.getChildren().clear();
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    //Add the rectangles
+                    Rectangle rec = new Rectangle(width, width);
+                    rec.setStroke(Color.BLACK);
+                    rec.setFill(Color.WHITE);
+                    rec.setStrokeWidth(3);
+                    rec.setStrokeType(StrokeType.CENTERED);
+
+                    //Add the text areas
+                    TextField text = new TextField();
+                    text.setAlignment(Pos.CENTER);
+                    text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 1));
+                    text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+                    logic.setGameField(text);
+
+                    //Adding the target values
+                    StackPane targetPane = new StackPane();
+                    Text target = new Text();
+                    target.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+                    targetPane.getChildren().add(target);
+                    targetPane.setMaxSize(10, 10);
+                    targetValues.add(target);
+
+                    //Stacks the textfield on top of the rectangles
+                    StackPane stackPane = new StackPane();
+                    stackPane.getChildren().add(rec);
+                    stackPane.setAlignment(Pos.TOP_LEFT);
+                    stackPane.getChildren().add(text);
+                    stackPane.getChildren().add(targetPane);
+
+                    canvasPane.add(stackPane, i, j, 1, 1);
+                    text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+
+                    rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 1));
+                    rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 1));
+
+                    //region Get easier access to rows and cols
+                    textFieldHolder[j][i] = text;
+                    final int row = i;
+                    final int col = j;
+                    text.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            boolean numeric = true;
+                            numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                            if (text.getText() == null || text.getText().isEmpty() || text.getText() == "" || numeric == false)
+                                valueHolder[col][row] = 0;
+
+                            else {
+                                valueHolder[col][row] = Integer.valueOf(text.getText());
+                            }
+                        }
+                    });
+                    //endregion
+
+                    //region Handler for Playing Buttons
+                    text.addEventHandler(MouseEvent.MOUSE_CLICKED, a -> {
+                        //Clear the text box when it has been clicked
+                        text.setText("");
+                        for (Button button : playButtons) {
+                            button.setOnMouseClicked(f -> {
+                                text.setText(button.getText());
+
+                                //Check for valid input. The input depends on the size of the board.
+                                if (button.getText() != null)
+                                    if (Integer.valueOf(text.getText()) > size) {
+                                        text.setText("");
+                                        new Alert(Alert.AlertType.ERROR,
+                                                "You cant enter that big of a number!")
+                                                .showAndWait();
+                                    }
+                            });
+                        }
+                    });
+                    //endregion
+                }
+            }
+
+            //Get the text from the file.
+            try (Scanner scanner = new Scanner(new File(path))) {
+                //Work through every line in the given text file to create the game grid.
+                while (scanner.hasNext()) {
+                    //For every line we create a cluster.
+                    Cluster cluster = new Cluster();
+                    logic.getClusters().add(cluster);
+
+                    //Split the input line into target value and textfields.
+                    String line = scanner.nextLine();
+                    String[] valueAndFields = line.split(" ", 2);
+                    String targetValue = valueAndFields[0];
+                    String textFields = valueAndFields[1];
+
+                    //Create the text fields and add them to their cluster.
+                    String[] textField = textFields.split(",");
+                    for (String text : textField) {
+                        TextField field = new TextField(text);
+                        cluster.addField(field);
+                    }
+
+                    //Set the cluster color.
+                    cluster.setClusterColor();
+
+                    //Set the target values.
+                    targetValues.get(Integer.valueOf(textField[0]) - 1).setText(targetValue);
+                    cluster.setClusterTargetValue(targetValues.get(Integer.valueOf(textField[0])).getText());
+
+                    //Read the next line.
+                    scanner.nextLine();
+                }
+
+            } catch (FileNotFoundException f) {
+                f.printStackTrace();
+            }
+        });
         //endregion
         //endregion
 
