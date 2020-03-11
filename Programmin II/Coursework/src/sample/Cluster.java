@@ -16,7 +16,7 @@ public class Cluster {
 
     //Generate a random color for each Cluster
     private Random rand = new Random();
-    private static int clusterColorPointer = 0;
+    public static int clusterColorPointer = 0;
     private static int bound = 20;
     private static List<String> colors = new ArrayList<>() {
         {
@@ -46,7 +46,7 @@ public class Cluster {
             add("lightyellow");
 
             add("mediumpurple");
-            add("indigo");
+            add("DARKSLATEBLUE");
             add("purple");
 
             add("deeppink");

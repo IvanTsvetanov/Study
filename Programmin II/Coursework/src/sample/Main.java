@@ -575,6 +575,7 @@ public class Main extends Application {
 
         //region Button Load from File
         loadFile.setOnMouseClicked(e -> {
+            //region Get the Game Ready
             //Open the text file.
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
@@ -587,6 +588,7 @@ public class Main extends Application {
             for (Text text : targetValues) {
                 text.setText("");
             }
+            Cluster.clusterColorPointer = 0;
 
             //See how big is the grid (NxN). Find the max number of a textfield.
             try (Scanner scanner = new Scanner(new File(path))) {
@@ -611,11 +613,14 @@ public class Main extends Application {
             //Initiate the holders with the new size.
             textFieldHolder = new TextField[size][size];
             valueHolder = new int[size][size];
+            targetValues.clear();
+
+            //endregion
 
             //region Draw the game grid anew
             canvasPane.getChildren().clear();
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
+            for (int j = 0; j < size; j++) {
+                for (int i = 0; i < size; i++) {
                     //Add the rectangles
                     Rectangle rec = new Rectangle(60, 60);
                     rec.setStroke(Color.BLACK);
@@ -742,16 +747,18 @@ public class Main extends Application {
                     //Create the text fields and add them to their cluster.
                     String[] textField = textFields.split(",");
                     for (String text : textField) {
-                        TextField field = new TextField(text);
-                        cluster.addField(field);
+                        cluster.addField(logic.getTextFields().get(Integer.valueOf(text) - 1));
                     }
-
-                    //Set the cluster color.
-                    cluster.setClusterColor();
 
                     //Set the target values.
                     targetValues.get(Integer.valueOf(textField[0]) - 1).setText(targetValue);
-                    cluster.setClusterTargetValue(targetValues.get(Integer.valueOf(textField[0])).getText());
+                    cluster.setClusterTargetValue(targetValues.get(Integer.valueOf(textField[0]) - 1).getText());
+
+                    //Set the cluster color.
+                    cluster.setClusterColor();
+                    for(TextField text : cluster.getCluster()) {
+                        text.setStyle(cluster.getClusterColor());
+                    }
                 }
 
             } catch (FileNotFoundException f) {
