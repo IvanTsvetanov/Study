@@ -45,6 +45,8 @@ public class Main extends Application {
     private int[][] valueHolder = new int[size][size];
     private TextField[][] textFieldHolder = new TextField[size][size];
     private boolean isComplete = true;
+    private ArrayList<Integer> fieldNumbers = new ArrayList<>();
+    private boolean invalidFieldInput = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -603,7 +605,7 @@ public class Main extends Application {
                     String[] textField = textFields.split(",");
                     int[] array = Arrays.asList(textField).stream().mapToInt(Integer::parseInt).toArray();
                     int max = getMax(array);
-                    if(size < max) size = max;
+                    if (size < max) size = max;
                 }
             } catch (Exception f) {
                 f.printStackTrace();
@@ -699,7 +701,7 @@ public class Main extends Application {
             }
             //endregion
 
-            //region Check for proper keyboard input
+            //region Check for proper keyboard input & Win condition
             for (TextField text : logic.getTextFields()) {
                 text.textProperty().addListener(new ChangeListener<String>() {
                     @Override
@@ -726,12 +728,52 @@ public class Main extends Application {
                         } else {
                             text.setText("");
                         }
+
+                        //Win condition checking.
+                        ArrayList<Boolean> isFinished = new ArrayList<>();
+                        for (Cluster cluster : logic.getClusters()) {
+                            isFinished.add(cluster.checkIfSolved());
+                        }
+
+                        //Check the cols
+                        isComplete = true;
+                        int[] col;
+                        for (int i = 0; i < size; i++) {
+                            col = getColumn(valueHolder, i);
+                            //Check if the col contains zeros (i.e. not fully populated)
+                            if (duplicates(col) == true) {
+                                isComplete = false;
+                                break;
+                            }
+                        }
+
+                        //Check the rows
+                        int[] row;
+                        for (int i = 0; i < size; i++) {
+                            row = getRow(valueHolder, i);
+                            if (duplicates(row) == true) {
+                                isComplete = false;
+                                break;
+                            }
+                        }
+
+                        if (!isFinished.contains(false) && isComplete == true) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                    "It took you *ADD TIME HERE*");
+
+                            alert.setTitle("You have won!");
+                            alert.setHeaderText("!CONGRATULATIONS!");
+
+                            alert.showAndWait();
+                        }
                     }
                 });
             }
             //endregion
 
-            //Get the game info from the file.
+            //region Get the game info from the file.
+            fieldNumbers.clear();
+            invalidFieldInput = false;
             try (Scanner scanner = new Scanner(new File(path))) {
                 //Work through every line in the given text file to create the game grid.
                 while (scanner.hasNext()) {
@@ -745,9 +787,33 @@ public class Main extends Application {
                     String textFields = valueAndFields[1];
 
                     //Create the text fields and add them to their cluster.
+                    ArrayList<Integer> fieldChecker = new ArrayList<>();
                     String[] textField = textFields.split(",");
                     for (String text : textField) {
                         cluster.addField(logic.getTextFields().get(Integer.valueOf(text) - 1));
+                        //Add the numbers to check for valid input
+                        fieldNumbers.add(Integer.valueOf(text));
+                        fieldChecker.add(Integer.valueOf(text));
+                    }
+                    //Check for adjacent cells in a cluster.
+                    Collections.sort(fieldChecker);
+                    for (int i = 0; i < fieldChecker.size(); i++) {
+                        if(fieldChecker.size() < 3)
+                        if (i < fieldChecker.size() - 1) {
+                            if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
+                                    fieldChecker.get(i) + size != fieldChecker.get(i + 1)) {
+                                invalidFieldInput = true;
+                            }
+                        }
+                        else{
+                            if (i < fieldChecker.size() - 1 && i > 0) {
+                                if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
+                                        fieldChecker.get(i) + size != fieldChecker.get(i + 1) &&
+                                fieldChecker.get(i - 1) + 6 != fieldChecker.get(i + 1)) {
+                                    invalidFieldInput = true;
+                                }
+                            }
+                        }
                     }
 
                     //Set the target values.
@@ -756,14 +822,26 @@ public class Main extends Application {
 
                     //Set the cluster color.
                     cluster.setClusterColor();
-                    for(TextField text : cluster.getCluster()) {
+                    for (TextField text : cluster.getCluster()) {
                         text.setStyle(cluster.getClusterColor());
                     }
                 }
+                //Display message for adjacent cells & for duplicate cells in a cluster.
+                Set<Integer> set = new HashSet<Integer>(fieldNumbers);
 
+                if (set.size() < fieldNumbers.size()) {
+                    new Alert(Alert.AlertType.ERROR,
+                            "Invalid file selected. Please select a new file!")
+                            .showAndWait();
+                } else if (invalidFieldInput) {
+                    new Alert(Alert.AlertType.ERROR,
+                            "Invalid file selected. Please select a new file!")
+                            .showAndWait();
+                }
             } catch (FileNotFoundException f) {
                 f.printStackTrace();
             }
+            //endregion
         });
         //endregion
         //endregion
@@ -792,7 +870,8 @@ public class Main extends Application {
 
     boolean duplicates(int[] array) {
         for (int j = 0; j < array.length; j++) {
-            if (array[j] == 0) array = removeTheElement(array, j);
+            //if (array[j] == 0) array = removeTheElement(array, j);
+            if (array[j] == 0) array[j] = Integer.MAX_VALUE - j;
         }
         Set<Integer> lump = new HashSet<Integer>();
         for (int i : array) {
@@ -858,10 +937,10 @@ public class Main extends Application {
         return tryParse(value, 0);
     }
 
-    public static int getMax(int[] inputArray){
+    public static int getMax(int[] inputArray) {
         int maxValue = inputArray[0];
-        for(int i=1;i < inputArray.length;i++){
-            if(inputArray[i] > maxValue){
+        for (int i = 1; i < inputArray.length; i++) {
+            if (inputArray[i] > maxValue) {
                 maxValue = inputArray[i];
             }
         }

@@ -91,60 +91,50 @@ public class Cluster {
     //text.setStyle("-fx-background-color: ;");
     public void setClusterColor() {
         //Check for the base cases
-        if(clusterColorPointer == 0) {
+        if (clusterColorPointer == 0) {
             String color = colors.get(0);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            clusterColorPointer+=3;
-        }
-
-        else if(clusterColorPointer == 1) {
+            clusterColorPointer += 3;
+        } else if (clusterColorPointer == 1) {
             String color = colors.get(1);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            clusterColorPointer+=3;
-        }
-
-        else if(clusterColorPointer == 2) {
+            clusterColorPointer += 3;
+        } else if (clusterColorPointer == 2) {
             String color = colors.get(2);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            clusterColorPointer+=3;
-        }
-
-        else if(clusterColorPointer % 3 == 0) {
+            clusterColorPointer += 3;
+        } else if (clusterColorPointer % 3 == 0) {
             String color = colors.get(clusterColorPointer);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            if(clusterColorPointer == colors.size()-3) clusterColorPointer = 1;
+            if (clusterColorPointer == colors.size() - 3) clusterColorPointer = 1;
             else {
-                clusterColorPointer+=3;
+                clusterColorPointer += 3;
             }
-        }
-
-        else if((clusterColorPointer - 1) % 3 == 0) {
+        } else if ((clusterColorPointer - 1) % 3 == 0) {
             String color = colors.get(clusterColorPointer);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            if(clusterColorPointer == colors.size()-2) clusterColorPointer = 2;
+            if (clusterColorPointer == colors.size() - 2) clusterColorPointer = 2;
             else {
-                clusterColorPointer+=3;
+                clusterColorPointer += 3;
             }
-        }
-
-        else if((clusterColorPointer - 2) % 3 == 0) {
+        } else if ((clusterColorPointer - 2) % 3 == 0) {
             String color = colors.get(clusterColorPointer);
             for (TextField text : cluster)
                 text.setStyle("-fx-background-color: " + color + ";");
             setClusterColor("-fx-background-color: " + color + ";");
-            if(clusterColorPointer == colors.size()-1) clusterColorPointer = 0;
+            if (clusterColorPointer == colors.size() - 1) clusterColorPointer = 0;
             else {
-                clusterColorPointer+=3;
+                clusterColorPointer += 3;
             }
         }
 
@@ -175,10 +165,11 @@ public class Cluster {
         String targetSign = null;
 
         //Split up the target value
-        if (this.targetValue.length() == 2) {
-            targetNumber = Character.getNumericValue(this.targetValue.charAt(0));
-            targetSign = String.valueOf(this.targetValue.charAt(1));
-        } else {
+        if(this.targetValue.length() > 1) {
+            targetSign = this.targetValue.substring(this.targetValue.length() - 1);
+            targetNumber = Integer.valueOf(this.targetValue.substring(0, this.targetValue.length() - 1));
+        }
+        else {
             targetNumber = Character.getNumericValue(this.targetValue.charAt(0));
         }
 
@@ -202,6 +193,12 @@ public class Cluster {
                         tempValueHolder *= value;
                     }
                     break;
+                case "x":
+                    tempValueHolder = 1;
+                    for (Integer value : values) {
+                        tempValueHolder *= value;
+                    }
+                    break;
                 case "+":
                     for (Integer value : values) {
                         tempValueHolder += value;
@@ -215,6 +212,17 @@ public class Cluster {
                     }
                     break;
                 case "/":
+                    Collections.sort(values, Collections.reverseOrder());
+                    tempValueHolder = values.get(0);
+                    for (int i = 1; i < values.size(); i++) {
+                        if (values.get(i) == 0)
+                            tempValueHolder /= 1;
+                        else {
+                            tempValueHolder /= values.get(i);
+                        }
+                    }
+                    break;
+                case "÷":
                     Collections.sort(values, Collections.reverseOrder());
                     tempValueHolder = values.get(0);
                     for (int i = 1; i < values.size(); i++) {
