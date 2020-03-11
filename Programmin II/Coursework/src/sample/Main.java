@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -27,11 +29,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -575,6 +575,10 @@ public class Main extends Application {
 
         //endregion
 
+        //region Button Redo
+
+        //endregion
+
         //region Button Load from File
         loadFile.setOnMouseClicked(e -> {
             //region Get the Game Ready
@@ -798,22 +802,21 @@ public class Main extends Application {
                     //Check for adjacent cells in a cluster.
                     Collections.sort(fieldChecker);
                     for (int i = 0; i < fieldChecker.size(); i++) {
-                        if(fieldChecker.size() < 3)
-                        if (i < fieldChecker.size() - 1) {
-                            if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
-                                    fieldChecker.get(i) + size != fieldChecker.get(i + 1)) {
-                                invalidFieldInput = true;
-                            }
-                        }
-                        else{
-                            if (i < fieldChecker.size() - 1 && i > 0) {
+                        if (fieldChecker.size() < 3)
+                            if (i < fieldChecker.size() - 1) {
                                 if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
-                                        fieldChecker.get(i) + size != fieldChecker.get(i + 1) &&
-                                fieldChecker.get(i - 1) + 6 != fieldChecker.get(i + 1)) {
+                                        fieldChecker.get(i) + size != fieldChecker.get(i + 1)) {
                                     invalidFieldInput = true;
                                 }
+                            } else {
+                                if (i < fieldChecker.size() - 1 && i > 0) {
+                                    if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
+                                            fieldChecker.get(i) + size != fieldChecker.get(i + 1) &&
+                                            fieldChecker.get(i - 1) + 6 != fieldChecker.get(i + 1)) {
+                                        invalidFieldInput = true;
+                                    }
+                                }
                             }
-                        }
                     }
 
                     //Set the target values.
@@ -842,6 +845,328 @@ public class Main extends Application {
                 f.printStackTrace();
             }
             //endregion
+        });
+        //endregion
+
+        //region Load from Text
+        loadText.setOnMouseClicked(e -> {
+            //Create the input text pane.
+            Button inputDone = new Button("Done");
+            inputDone.setMinSize(60, 30);
+            TextArea inputText = new TextArea();
+            inputText.setMinHeight(385);
+            GridPane inputPane = new GridPane();
+            inputPane.setPadding(new Insets(5));
+            inputPane.setVgap(5);
+            inputPane.add(inputText, 0, 0, 2, 1);
+            inputPane.add(inputDone, 1, 1, 1, 1);
+
+            //region Create the new game.
+            inputDone.setOnMouseClicked(f -> {
+                //Create a temp text file, containing the entered code, and then generate the game from it.
+                try {
+                    PrintWriter writer = new PrintWriter("temp-storage.txt", "UTF-8");
+                    //Check for proper input
+                    if (inputText.getText().contains("[a-zA-Z]+") == false && inputText.getText().length() > 2){
+                        writer.print(inputText.getText());
+                    }
+                    else {
+                        new Alert(Alert.AlertType.ERROR,
+                                "Invalid input. Please try again!")
+                                .showAndWait();
+                    }
+
+                    writer.close();
+                } catch (Exception z) {
+                    z.printStackTrace();
+                }
+
+                //region Get the Game Ready
+                String path = "temp-storage.txt";
+
+                //Clear the game logic from the loaded by default example.
+                logic.getClusters().clear();
+                logic.getTextFields().clear();
+                for (Text text : targetValues) {
+                    text.setText("");
+                }
+                Cluster.clusterColorPointer = 0;
+
+                //See how big is the grid (NxN). Find the max number of a textfield.
+                try (Scanner scanner = new Scanner(new File(path))) {
+                    //Work through every line in the given text file to create the game grid. (DUPLICATE CODE BELOW).
+                    while (scanner.hasNext()) {
+                        //Split the input line into target value and textfields.
+                        String line = scanner.nextLine();
+                        String[] valueAndFields = line.split(" ", 2);
+                        String targetValue = valueAndFields[0];
+                        String textFields = valueAndFields[1];
+                        //Get the max value.
+                        String[] textField = textFields.split(",");
+                        int[] array = Arrays.asList(textField).stream().mapToInt(Integer::parseInt).toArray();
+                        int max = getMax(array);
+                        if (size < max) size = max;
+                    }
+                } catch (Exception x) {
+                    x.printStackTrace();
+                }
+                size = (int) Math.sqrt(Double.valueOf(size));
+
+                //Initiate the holders with the new size.
+                textFieldHolder = new TextField[size][size];
+                valueHolder = new int[size][size];
+                targetValues.clear();
+
+                //endregion
+
+                //region Draw the game grid anew
+                canvasPane.getChildren().clear();
+                for (int j = 0; j < size; j++) {
+                    for (int i = 0; i < size; i++) {
+                        //Add the rectangles
+                        Rectangle rec = new Rectangle(60, 60);
+                        rec.setStroke(Color.BLACK);
+                        rec.setFill(Color.WHITE);
+                        rec.setStrokeWidth(3);
+                        rec.setStrokeType(StrokeType.CENTERED);
+                        rec.widthProperty().bind(canvasPane.widthProperty().divide(size + 2));
+                        rec.heightProperty().bind(canvasPane.heightProperty().divide(size + 2));
+
+                        //Add the text areas
+                        TextField text = new TextField();
+                        text.setAlignment(Pos.CENTER);
+                        text.maxWidthProperty().bind(canvasPane.widthProperty().divide(size + 2));
+                        text.maxHeightProperty().bind(canvasPane.heightProperty().divide(size + 2));
+                        logic.setGameField(text);
+
+                        //Adding the target values
+                        StackPane targetPane = new StackPane();
+                        Text target = new Text();
+                        target.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+                        targetPane.getChildren().add(target);
+                        targetPane.setMaxSize(10, 10);
+                        targetValues.add(target);
+
+                        //Stacks the textfield on top of the rectangles
+                        StackPane stackPane = new StackPane();
+                        stackPane.getChildren().add(rec);
+                        stackPane.setAlignment(Pos.TOP_LEFT);
+                        stackPane.getChildren().add(text);
+                        stackPane.getChildren().add(targetPane);
+
+                        canvasPane.add(stackPane, i, j, 1, 1);
+                        text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+
+                        //region Get easier access to rows and cols
+                        textFieldHolder[j][i] = text;
+                        final int row = i;
+                        final int col = j;
+                        text.textProperty().addListener(new ChangeListener<String>() {
+                            @Override
+                            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                                boolean numeric = true;
+                                numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                                if (text.getText() == null || text.getText().isEmpty() || text.getText() == "" || numeric == false)
+                                    valueHolder[col][row] = 0;
+
+                                else {
+                                    valueHolder[col][row] = Integer.valueOf(text.getText());
+                                }
+                            }
+                        });
+                        //endregion
+
+                        //region Handler for Playing Buttons
+                        text.addEventHandler(MouseEvent.MOUSE_CLICKED, a -> {
+                            //Clear the text box when it has been clicked
+                            text.setText("");
+                            for (Button button : playButtons) {
+                                button.setOnMouseClicked(p -> {
+                                    text.setText(button.getText());
+
+                                    //Check for valid input. The input depends on the size of the board.
+                                    if (button.getText() != null)
+                                        if (Integer.valueOf(text.getText()) > size) {
+                                            text.setText("");
+                                            new Alert(Alert.AlertType.ERROR,
+                                                    "You cant enter that big of a number!")
+                                                    .showAndWait();
+                                        }
+                                });
+                            }
+                        });
+                        //endregion
+                    }
+                }
+                //endregion
+
+                //region Check for proper keyboard input & Win condition
+                for (TextField text : logic.getTextFields()) {
+                    text.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            //Check for valid entry.
+                            Integer enteredNumber = 0;
+
+                            //Check if it is a numeric entry
+                            boolean numeric = true;
+                            numeric = text.getText().matches("-?\\d+(\\.\\d+)?");
+
+                            //If it is a number, and it is in the range in the size,
+                            //we keep the change to the text field.
+                            if (numeric) {
+                                enteredNumber = tryParse(text.getText());
+                                if (enteredNumber > 0 && enteredNumber <= size) {
+                                    text.setText(enteredNumber.toString());
+                                } else {
+                                    text.setText("");
+                                    new Alert(Alert.AlertType.ERROR,
+                                            "Invalid input! You cannot enter that big of a number!")
+                                            .showAndWait();
+                                }
+                            } else {
+                                text.setText("");
+                            }
+
+                            //Win condition checking.
+                            ArrayList<Boolean> isFinished = new ArrayList<>();
+                            for (Cluster cluster : logic.getClusters()) {
+                                isFinished.add(cluster.checkIfSolved());
+                            }
+
+                            //Check the cols
+                            isComplete = true;
+                            int[] col;
+                            for (int i = 0; i < size; i++) {
+                                col = getColumn(valueHolder, i);
+                                //Check if the col contains zeros (i.e. not fully populated)
+                                if (duplicates(col) == true) {
+                                    isComplete = false;
+                                    break;
+                                }
+                            }
+
+                            //Check the rows
+                            int[] row;
+                            for (int i = 0; i < size; i++) {
+                                row = getRow(valueHolder, i);
+                                if (duplicates(row) == true) {
+                                    isComplete = false;
+                                    break;
+                                }
+                            }
+
+                            if (!isFinished.contains(false) && isComplete == true) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                        "It took you *ADD TIME HERE*");
+
+                                alert.setTitle("You have won!");
+                                alert.setHeaderText("!CONGRATULATIONS!");
+
+                                alert.showAndWait();
+                            }
+                        }
+                    });
+                }
+                //endregion
+
+                //region Get the game info from the file.
+                fieldNumbers.clear();
+                invalidFieldInput = false;
+                try (Scanner scanner = new Scanner(new File(path))) {
+                    //Work through every line in the given text file to create the game grid.
+                    while (scanner.hasNext()) {
+                        //For every line we create a cluster.
+                        Cluster cluster = new Cluster();
+                        logic.getClusters().add(cluster);
+
+                        String line = scanner.nextLine();
+                        String[] valueAndFields = line.split(" ", 2);
+                        String targetValue = valueAndFields[0];
+                        String textFields = valueAndFields[1];
+
+                        //Create the text fields and add them to their cluster.
+                        ArrayList<Integer> fieldChecker = new ArrayList<>();
+                        String[] textField = textFields.split(",");
+                        for (String text : textField) {
+                            cluster.addField(logic.getTextFields().get(Integer.valueOf(text) - 1));
+                            //Add the numbers to check for valid input
+                            fieldNumbers.add(Integer.valueOf(text));
+                            fieldChecker.add(Integer.valueOf(text));
+                        }
+                        //Check for adjacent cells in a cluster.
+                        Collections.sort(fieldChecker);
+                        for (int i = 0; i < fieldChecker.size(); i++) {
+                            if (fieldChecker.size() < 3)
+                                if (i < fieldChecker.size() - 1) {
+                                    if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
+                                            fieldChecker.get(i) + size != fieldChecker.get(i + 1)) {
+                                        invalidFieldInput = true;
+                                    }
+                                } else {
+                                    if (i < fieldChecker.size() - 1 && i > 0) {
+                                        if (fieldChecker.get(i) + 1 != fieldChecker.get(i + 1) &&
+                                                fieldChecker.get(i) + size != fieldChecker.get(i + 1) &&
+                                                fieldChecker.get(i - 1) + 6 != fieldChecker.get(i + 1)) {
+                                            invalidFieldInput = true;
+                                        }
+                                    }
+                                }
+                        }
+
+                        //Set the target values.
+                        targetValues.get(Integer.valueOf(textField[0]) - 1).setText(targetValue);
+                        cluster.setClusterTargetValue(targetValues.get(Integer.valueOf(textField[0]) - 1).getText());
+
+                        //Set the cluster color.
+                        cluster.setClusterColor();
+                        for (TextField text : cluster.getCluster()) {
+                            text.setStyle(cluster.getClusterColor());
+                        }
+                    }
+                    //Display message for adjacent cells & for duplicate cells in a cluster.
+                    Set<Integer> set = new HashSet<Integer>(fieldNumbers);
+
+                    if (set.size() < fieldNumbers.size()) {
+                        new Alert(Alert.AlertType.ERROR,
+                                "Invalid file selected. Please select a new file!")
+                                .showAndWait();
+                    } else if (invalidFieldInput) {
+                        new Alert(Alert.AlertType.ERROR,
+                                "Invalid file selected. Please select a new file!")
+                                .showAndWait();
+                    }
+                } catch (FileNotFoundException q) {
+                    q.printStackTrace();
+                }
+                //endregion
+
+                //Close window after "Done".
+                Window window =   ((Node)(f.getSource())).getScene().getWindow();
+                if (window instanceof Stage){
+                    ((Stage) window).close();
+                }
+
+                //Delete the temp file.
+                File tempFile = new File("temp-storage.txt");
+                tempFile.delete();
+            });
+            //endregion
+
+            //Show the new scene containing the text area.
+            Scene inputScene = new Scene(inputPane, 250, 430);
+            Stage newWindow = new Stage();
+            newWindow.initModality(Modality.NONE);
+            newWindow.setTitle("Enter puzzle");
+            newWindow.setScene(inputScene);
+            newWindow.setResizable(false);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + primaryStage.getWidth());
+            newWindow.setY(primaryStage.getY());
+
+            newWindow.show();
         });
         //endregion
         //endregion
