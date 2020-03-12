@@ -1,5 +1,9 @@
 package sample;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -9,10 +13,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -30,6 +31,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.*;
@@ -494,14 +496,83 @@ public class Main extends Application {
                         }
                     }
 
-                    if (!isFinished.contains(false) && isComplete == true) {
+                    //if (!isFinished.contains(false) && isComplete == true) {
+                    if(true){
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                                 "It took you *ADD TIME HERE*");
 
                         alert.setTitle("You have won!");
-                        alert.setHeaderText("!CONGRATULATIONS!");
+                        alert.setHeaderText("CONGRATULATIONS!");
 
                         alert.showAndWait();
+
+                        //Animation
+                        /*Rectangle rec0 = new Rectangle(0, 0, 150, 150);
+                        rec0.setArcHeight(50);
+                        rec0.setArcWidth(50);
+                        rec0.setFill(Color.DEEPSKYBLUE);
+
+                        Rectangle rec1 = new Rectangle(mainPane.getHeight(), mainPane.getHeight(), 150, 150);
+                        rec1.setArcHeight(50);
+                        rec1.setArcWidth(50);
+                        rec1.setFill(Color.DEEPSKYBLUE);
+
+                        final Duration SEC_3 = Duration.millis(3000);
+
+                        RotateTransition rt = new RotateTransition(SEC_3);
+                        rt.setByAngle(360);
+                        rt.setCycleCount(5);
+                        rt.setAutoReverse(true);
+
+                        ParallelTransition pt0 = new ParallelTransition(rec0, rt);
+                        pt0.play();
+
+                        ParallelTransition pt1 = new ParallelTransition(rec0, rt);
+                        pt1.play();
+
+
+                        Pane pane = new Pane();
+                        pane.getChildren().addAll(rec);
+
+                        mainPane.getChildren().add(pane);*/
+
+
+                        for (int i = 0; i < 2; i++) {
+                            Rectangle rec = new Rectangle(i*360 + 15, i + 50, 130, 130);
+                            rec.setArcHeight(50);
+                            rec.setArcWidth(50);
+                            rec.setFill(Color.DEEPSKYBLUE);
+
+                            final Duration SEC_3 = Duration.millis(3000);
+
+                            RotateTransition rt = new RotateTransition(SEC_3);
+                            rt.setByAngle(360);
+                            rt.setCycleCount(Integer.MAX_VALUE);
+                            rt.setAutoReverse(true);
+
+                            FadeTransition ft = new FadeTransition(SEC_3);
+                            ft.setFromValue(1.0f);
+                            ft.setToValue(0.3f);
+                            ft.setCycleCount(Integer.MAX_VALUE);
+                            ft.setAutoReverse(true);
+
+                            ParallelTransition pt = new ParallelTransition(rec, rt, ft);
+                            pt.play();
+
+                            Pane recPane = new Pane();
+                            recPane.getChildren().addAll(rec);
+
+                            mainPane.getChildren().add(recPane);
+                        }
+                        Text finishText = new Text("GREAT JOB!");
+                        ScaleTransition st = new ScaleTransition(Duration.millis(2000));
+                        st.setByX(1.5f);
+                        st.setByY(1.5f);
+                        st.setCycleCount(Integer.MAX_VALUE);
+                        st.setAutoReverse(true);
+                        ParallelTransition pt1 = new ParallelTransition(finishText, st);
+                        pt1.play();
+                        mainPane.add(finishText, 0, 0, 1, 1);
                     }
                 }
             });
@@ -577,6 +648,71 @@ public class Main extends Application {
 
         //region Button Redo
 
+        //endregion
+
+        //region Button Change Font
+        //Open a new window to select font sizes of the game
+        changeFont.setOnMouseClicked(e -> {
+            //Create the components of the scene.
+            VBox fontBox = new VBox();
+            fontBox.setAlignment(Pos.CENTER);
+            fontBox.setSpacing(30);
+            Text selectFontSize = new Text("Select font size");
+            selectFontSize.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+            fontBox.getChildren().add(selectFontSize);
+            Button smallB = new Button("Small");
+            smallB.setMinSize(140, 40);
+            Button mediumB = new Button("Medium");
+            mediumB.setMinSize(140, 40);
+            Button largeB = new Button("Large");
+            largeB.setMinSize(140, 40);
+            fontBox.getChildren().addAll(smallB, mediumB, largeB);
+
+            //Handlers for changing fonts.
+            smallB.setOnMouseClicked(a -> {
+                for (TextField text : logic.getTextFields()) {
+                    text.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+                }
+                Window window = ((Node) (a.getSource())).getScene().getWindow();
+                if (window instanceof Stage) {
+                    ((Stage) window).close();
+                }
+            });
+
+            mediumB.setOnMouseClicked(a -> {
+                for (TextField text : logic.getTextFields()) {
+                    text.setFont(Font.font("Verdana", FontWeight.BOLD, 25));
+                }
+                Window window = ((Node) (a.getSource())).getScene().getWindow();
+                if (window instanceof Stage) {
+                    ((Stage) window).close();
+                }
+            });
+
+            largeB.setOnMouseClicked(a -> {
+                for (TextField text : logic.getTextFields()) {
+                    text.setFont(Font.font("Verdana", FontWeight.BOLD, 33));
+                }
+                Window window = ((Node) (a.getSource())).getScene().getWindow();
+                if (window instanceof Stage) {
+                    ((Stage) window).close();
+                }
+            });
+
+            //Create the scene and show it.
+            Scene inputScene = new Scene(fontBox, 225, 250);
+            Stage newWindow = new Stage();
+            newWindow.initModality(Modality.NONE);
+            newWindow.setTitle("Font");
+            newWindow.setScene(inputScene);
+            newWindow.setResizable(false);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + primaryStage.getWidth());
+            newWindow.setY(primaryStage.getY());
+
+            newWindow.show();
+        });
         //endregion
 
         //region Button Load from File
@@ -867,10 +1003,9 @@ public class Main extends Application {
                 try {
                     PrintWriter writer = new PrintWriter("temp-storage.txt", "UTF-8");
                     //Check for proper input
-                    if (inputText.getText().contains("[a-zA-Z]+") == false && inputText.getText().length() > 2){
+                    if (inputText.getText().contains("[a-zA-Z]+") == false && inputText.getText().length() > 2) {
                         writer.print(inputText.getText());
-                    }
-                    else {
+                    } else {
                         new Alert(Alert.AlertType.ERROR,
                                 "Invalid input. Please try again!")
                                 .showAndWait();
@@ -1143,8 +1278,8 @@ public class Main extends Application {
                 //endregion
 
                 //Close window after "Done".
-                Window window =   ((Node)(f.getSource())).getScene().getWindow();
-                if (window instanceof Stage){
+                Window window = ((Node) (f.getSource())).getScene().getWindow();
+                if (window instanceof Stage) {
                     ((Stage) window).close();
                 }
 
@@ -1270,6 +1405,24 @@ public class Main extends Application {
             }
         }
         return maxValue;
+    }
+
+    public void winningAnimation() {
+        for (int i = 1; i <= 2; i++) {
+            Rectangle rec = new Rectangle(i * 100, i * 100, 300, 300);
+            rec.setArcHeight(50);
+            rec.setArcWidth(50);
+            rec.setFill(Color.DEEPSKYBLUE);
+
+            final Duration SEC_2 = Duration.millis(2000);
+
+            RotateTransition rt = new RotateTransition(SEC_2);
+            rt.setByAngle(360);
+            rt.setCycleCount(1);
+            rt.setAutoReverse(true);
+            rt.play();
+
+        }
     }
 //endregion
 }

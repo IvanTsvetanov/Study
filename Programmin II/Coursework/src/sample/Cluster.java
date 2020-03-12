@@ -26,8 +26,8 @@ public class Cluster {
             //When you get to the end, start from three,
             //and get every sixth element.
             add("darkgray");
-            add("grey");
             add("lightgray");
+            add("gray");
 
             add("darkblue");
             add("blue");
