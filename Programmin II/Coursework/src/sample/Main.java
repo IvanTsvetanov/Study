@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 public class Main extends Application {
 
+    //region Variables
     private ArrayList<Button> playButtons = new ArrayList<>();
     private ArrayList<Text> targetValues = new ArrayList<>();
     private int size = 4;
@@ -49,6 +50,10 @@ public class Main extends Application {
     private boolean isComplete = true;
     private ArrayList<Integer> fieldNumbers = new ArrayList<>();
     private boolean invalidFieldInput = false;
+    int secondsPassed = 0;
+    Timer timer = new Timer();
+    TextField time = new TextField("0");
+    //endregion
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -496,75 +501,23 @@ public class Main extends Application {
                         }
                     }
 
-                    //if (!isFinished.contains(false) && isComplete == true) {
-                    if(true){
+                    if (!isFinished.contains(false) && isComplete == true) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,
                                 "It took you *ADD TIME HERE*");
 
                         alert.setTitle("You have won!");
                         alert.setHeaderText("CONGRATULATIONS!");
 
+                        //Win animation
                         alert.showAndWait();
-
-                        //Animation
-                        /*Rectangle rec0 = new Rectangle(0, 0, 150, 150);
-                        rec0.setArcHeight(50);
-                        rec0.setArcWidth(50);
-                        rec0.setFill(Color.DEEPSKYBLUE);
-
-                        Rectangle rec1 = new Rectangle(mainPane.getHeight(), mainPane.getHeight(), 150, 150);
-                        rec1.setArcHeight(50);
-                        rec1.setArcWidth(50);
-                        rec1.setFill(Color.DEEPSKYBLUE);
-
-                        final Duration SEC_3 = Duration.millis(3000);
-
-                        RotateTransition rt = new RotateTransition(SEC_3);
-                        rt.setByAngle(360);
-                        rt.setCycleCount(5);
-                        rt.setAutoReverse(true);
-
-                        ParallelTransition pt0 = new ParallelTransition(rec0, rt);
-                        pt0.play();
-
-                        ParallelTransition pt1 = new ParallelTransition(rec0, rt);
-                        pt1.play();
-
-
-                        Pane pane = new Pane();
-                        pane.getChildren().addAll(rec);
-
-                        mainPane.getChildren().add(pane);*/
-
-
-                        for (int i = 0; i < 2; i++) {
-                            Rectangle rec = new Rectangle(i*360 + 15, i + 50, 130, 130);
-                            rec.setArcHeight(50);
-                            rec.setArcWidth(50);
-                            rec.setFill(Color.DEEPSKYBLUE);
-
-                            final Duration SEC_3 = Duration.millis(3000);
-
-                            RotateTransition rt = new RotateTransition(SEC_3);
-                            rt.setByAngle(360);
-                            rt.setCycleCount(Integer.MAX_VALUE);
-                            rt.setAutoReverse(true);
-
-                            FadeTransition ft = new FadeTransition(SEC_3);
-                            ft.setFromValue(1.0f);
-                            ft.setToValue(0.3f);
-                            ft.setCycleCount(Integer.MAX_VALUE);
-                            ft.setAutoReverse(true);
-
-                            ParallelTransition pt = new ParallelTransition(rec, rt, ft);
-                            pt.play();
-
-                            Pane recPane = new Pane();
-                            recPane.getChildren().addAll(rec);
-
-                            mainPane.getChildren().add(recPane);
-                        }
                         Text finishText = new Text("GREAT JOB!");
+                        finishText.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+                        finishText.setStyle(" -fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);" +
+                                "    -fx-stroke: black;" +
+                                "    -fx-stroke-width: 1;");
+                        FlowPane textPane = new FlowPane();
+                        textPane.setAlignment(Pos.CENTER);
+                        textPane.getChildren().add(finishText);
                         ScaleTransition st = new ScaleTransition(Duration.millis(2000));
                         st.setByX(1.5f);
                         st.setByY(1.5f);
@@ -572,7 +525,10 @@ public class Main extends Application {
                         st.setAutoReverse(true);
                         ParallelTransition pt1 = new ParallelTransition(finishText, st);
                         pt1.play();
-                        mainPane.add(finishText, 0, 0, 1, 1);
+                        mainPane.add(textPane, 0, 0, 1, 1);
+                        mainPane.setOnMouseClicked(l -> {
+                            mainPane.getChildren().remove(textPane);
+                        });
                     }
                 }
             });
@@ -731,6 +687,7 @@ public class Main extends Application {
                 text.setText("");
             }
             Cluster.clusterColorPointer = 0;
+            update();
 
             //See how big is the grid (NxN). Find the max number of a textfield.
             try (Scanner scanner = new Scanner(new File(path))) {
@@ -905,6 +862,28 @@ public class Main extends Application {
                             alert.setHeaderText("!CONGRATULATIONS!");
 
                             alert.showAndWait();
+
+                            //Win animation
+                            alert.showAndWait();
+                            Text finishText = new Text("GREAT JOB!");
+                            finishText.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+                            finishText.setStyle(" -fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);" +
+                                    "    -fx-stroke: black;" +
+                                    "    -fx-stroke-width: 1;");
+                            FlowPane textPane = new FlowPane();
+                            textPane.setAlignment(Pos.CENTER);
+                            textPane.getChildren().add(finishText);
+                            ScaleTransition st = new ScaleTransition(Duration.millis(2000));
+                            st.setByX(1.5f);
+                            st.setByY(1.5f);
+                            st.setCycleCount(Integer.MAX_VALUE);
+                            st.setAutoReverse(true);
+                            ParallelTransition pt1 = new ParallelTransition(finishText, st);
+                            pt1.play();
+                            mainPane.add(textPane, 0, 0, 1, 1);
+                            mainPane.setOnMouseClicked(l -> {
+                                mainPane.getChildren().remove(textPane);
+                            });
                         }
                     }
                 });
@@ -996,6 +975,7 @@ public class Main extends Application {
             inputPane.setVgap(5);
             inputPane.add(inputText, 0, 0, 2, 1);
             inputPane.add(inputDone, 1, 1, 1, 1);
+            update();
 
             //region Create the new game.
             inputDone.setOnMouseClicked(f -> {
@@ -1200,6 +1180,28 @@ public class Main extends Application {
                                 alert.setHeaderText("!CONGRATULATIONS!");
 
                                 alert.showAndWait();
+
+                                //Win animation
+                                alert.showAndWait();
+                                Text finishText = new Text("GREAT JOB!");
+                                finishText.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+                                finishText.setStyle(" -fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);" +
+                                        "    -fx-stroke: black;" +
+                                        "    -fx-stroke-width: 1;");
+                                FlowPane textPane = new FlowPane();
+                                textPane.setAlignment(Pos.CENTER);
+                                textPane.getChildren().add(finishText);
+                                ScaleTransition st = new ScaleTransition(Duration.millis(2000));
+                                st.setByX(1.5f);
+                                st.setByY(1.5f);
+                                st.setCycleCount(Integer.MAX_VALUE);
+                                st.setAutoReverse(true);
+                                ParallelTransition pt1 = new ParallelTransition(finishText, st);
+                                pt1.play();
+                                mainPane.add(textPane, 0, 0, 1, 1);
+                                mainPane.setOnMouseClicked(l -> {
+                                    mainPane.getChildren().remove(textPane);
+                                });
                             }
                         }
                     });
@@ -1304,6 +1306,16 @@ public class Main extends Application {
             newWindow.show();
         });
         //endregion
+
+        //region Timer
+        start();
+        time.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                timerLabel.setText(time.getText());
+            }
+        });
+        //endregion
         //endregion
 
         //Set the scene and show it
@@ -1320,6 +1332,36 @@ public class Main extends Application {
     }
 
     //region Helper Methods
+    public void update() {
+        secondsPassed = 0;
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    secondsPassed++;
+                    time.setText(String.valueOf(secondsPassed));
+                });
+            }
+        };
+        timer.cancel();
+        timer = new Timer();
+        timer.schedule(timerTask, 1000, 1000);
+    }
+
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            Platform.runLater(() -> {
+                secondsPassed++;
+                time.setText(String.valueOf(secondsPassed));
+            });
+        }
+    };
+
+    public void start() {
+        timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+
     void sleepForOneSecond() {
         try {
             Thread.sleep(1000);
@@ -1406,30 +1448,41 @@ public class Main extends Application {
         }
         return maxValue;
     }
-
-    public void winningAnimation() {
-        for (int i = 1; i <= 2; i++) {
-            Rectangle rec = new Rectangle(i * 100, i * 100, 300, 300);
-            rec.setArcHeight(50);
-            rec.setArcWidth(50);
-            rec.setFill(Color.DEEPSKYBLUE);
-
-            final Duration SEC_2 = Duration.millis(2000);
-
-            RotateTransition rt = new RotateTransition(SEC_2);
-            rt.setByAngle(360);
-            rt.setCycleCount(1);
-            rt.setAutoReverse(true);
-            rt.play();
-
-        }
-    }
 //endregion
 }
 
 //USEFUL
 /*
-        //Run through all the text fields and add them to clusters
+
+                        /*for (int i = 0; i < 2; i++) {
+                            Rectangle rec = new Rectangle(i * 360 + 15, i + 50, 130, 130);
+                            rec.setArcHeight(50);
+                            rec.setArcWidth(50);
+                            rec.setFill(Color.DEEPSKYBLUE);
+
+                            final Duration SEC_3 = Duration.millis(3000);
+
+                            RotateTransition rt = new RotateTransition(SEC_3);
+                            rt.setByAngle(360);
+                            rt.setCycleCount(Integer.MAX_VALUE);
+                            rt.setAutoReverse(true);
+
+                            FadeTransition ft = new FadeTransition(SEC_3);
+                            ft.setFromValue(1.0f);
+                            ft.setToValue(0.3f);
+                            ft.setCycleCount(Integer.MAX_VALUE);
+                            ft.setAutoReverse(true);
+
+                            ParallelTransition pt = new ParallelTransition(rec, rt, ft);
+                            pt.play();
+
+                            Pane recPane = new Pane();
+                            recPane.getChildren().addAll(rec);
+
+                            mainPane.getChildren().add(recPane);
+                        }*/
+
+//Run through all the text fields and add them to clusters
         /*for(int i = 0; i < logic.getTextFields().size(); i++) {
             logic.getTextFields().get(i).setText(Integer.toString(i));
         }*/
