@@ -598,30 +598,45 @@ public class Main extends Application {
         //Arraylists to hold values and textfields.
         ArrayList<TextField> textFieldArrayList = new ArrayList<>();
         ArrayList<String> textFieldArrayListValues = new ArrayList<>();
+        undo.setDisable(true);
 
+        //Listener to update the textfields.
         for (TextField text : logic.getTextFields()) {
             text.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    if (!text.getText().equals("") && !text.equals(null)) {
-                        textFieldArrayList.add(text);
-                        textFieldArrayListValues.add(text.getText());
+                    if (!text.getText().equals("") && !text.equals(null) ) {
+                        if(textFieldArrayListValues.size() < 2) {
+                            textFieldArrayList.add(text);
+                            textFieldArrayListValues.add(text.getText());
+                        }
+                        //Takes care of adding values to the same textfield
+                        else if (textFieldArrayListValues.size() >= 2) {
+                            if (!textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)).equals(text.getText())){
+                                textFieldArrayList.add(text);
+                                textFieldArrayListValues.add(text.getText());
+                            }
+                        }
                     }
+                    //Disable button when there is nothing to undo.
+                    if(textFieldArrayListValues.size() == 1)
+                        undo.setDisable(true);
+                    else undo.setDisable(false);
                 }
             });
         }
+
         undo.setOnMouseClicked(e -> {
-            //Remove last element
+            //Remove the text from the last element.
             textFieldArrayList.get((textFieldArrayList.size() - 1)).setText("");
 
+            //Remove the last element.
             textFieldArrayList.remove(textFieldArrayList.size()-1);
             textFieldArrayListValues.remove(textFieldArrayListValues.size()-1);
-            System.out.println(textFieldArrayList.size() - 1);
-            System.out.println(textFieldArrayListValues.size() - 1);
 
+            //Set the new text.
+            if(textFieldArrayList.size() > 0)
             textFieldArrayList.get(textFieldArrayList.size() - 1).setText(textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)));
-
-
         });
         //endregion
 
