@@ -1,23 +1,16 @@
 package sample;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
-import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -26,18 +19,17 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Main extends Application {
 
@@ -53,6 +45,7 @@ public class Main extends Application {
     int secondsPassed = 0;
     Timer timer = new Timer();
     TextField time = new TextField("0");
+    boolean flagMistakes = false;
     //endregion
 
     @Override
@@ -537,39 +530,41 @@ public class Main extends Application {
 
         //region Button Show Mistakes
         showMistakes.setOnMousePressed(e -> {
-            //Check the cols
-            int[] col;
-            for (int i = 0; i < size; i++) {
-                col = getColumn(valueHolder, i);
-                //Check if the col contains zeros (i.e. not fully populated)
-                if (duplicates(col) == true) {
-                    for (int j = 0; j < size; j++) {
-                        textFieldHolder[j][i].setStyle("-fx-background-color: red;");
+            //If its off - turn it on, flash mistakes, and change color of target value
+            if (flagMistakes == false) {
+                //Check the cols
+                int[] col;
+                for (int i = 0; i < size; i++) {
+                    col = getColumn(valueHolder, i);
+                    //Check if the col contains zeros (i.e. not fully populated)
+                    if (duplicates(col) == true) {
+                        for (int j = 0; j < size; j++) {
+                            textFieldHolder[j][i].setStyle("-fx-background-color: red;");
+                        }
                     }
                 }
-            }
 
-            //Check the rows
-            int[] row;
-            for (int i = 0; i < size; i++) {
-                row = getRow(valueHolder, i);
-                if (duplicates(row) == true) {
-                    for (int j = 0; j < size; j++) {
-                        textFieldHolder[i][j].setStyle("-fx-background-color: red;");
+                //Check the rows
+                int[] row;
+                for (int i = 0; i < size; i++) {
+                    row = getRow(valueHolder, i);
+                    if (duplicates(row) == true) {
+                        for (int j = 0; j < size; j++) {
+                            textFieldHolder[i][j].setStyle("-fx-background-color: red;");
+                        }
                     }
                 }
-            }
 
-            //Check the clusters
-            for (int z = 0; z < logic.getClusters().size(); z++) {
-                if (logic.getClusters().get(z).checkIfSolved() == false) {
-                    for (int i = 0; i < logic.getClusters().get(z).getCluster().size(); i++) {
-                        logic.getClusters().get(z).getCluster().get(i).setStyle("-fx-background-color: red;");
+                //Check the clusters
+                for (int z = 0; z < logic.getClusters().size(); z++) {
+                    if (logic.getClusters().get(z).checkIfSolved() == false) {
+                        for (int i = 0; i < logic.getClusters().get(z).getCluster().size(); i++) {
+                            logic.getClusters().get(z).getCluster().get(i).setStyle("-fx-background-color: red;");
+                        }
                     }
                 }
             }
         });
-
         //Return to the normal colors
         showMistakes.setOnMouseReleased(e -> {
             sleepForOneSecond();
@@ -577,6 +572,7 @@ public class Main extends Application {
                 logic.getClusters().get(z).setClusterColorNotRandom(logic.getClusters().get(z).getClusterColor());
             }
         });
+
         //endregion
 
         //region Button Clear Game Grid
@@ -599,7 +595,34 @@ public class Main extends Application {
         //endregion
 
         //region Button Undo
+        //Arraylists to hold values and textfields.
+        ArrayList<TextField> textFieldArrayList = new ArrayList<>();
+        ArrayList<String> textFieldArrayListValues = new ArrayList<>();
 
+        for (TextField text : logic.getTextFields()) {
+            text.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (!text.getText().equals("") && !text.equals(null)) {
+                        textFieldArrayList.add(text);
+                        textFieldArrayListValues.add(text.getText());
+                    }
+                }
+            });
+        }
+        undo.setOnMouseClicked(e -> {
+            //Remove last element
+            textFieldArrayList.get((textFieldArrayList.size() - 1)).setText("");
+
+            textFieldArrayList.remove(textFieldArrayList.size()-1);
+            textFieldArrayListValues.remove(textFieldArrayListValues.size()-1);
+            System.out.println(textFieldArrayList.size() - 1);
+            System.out.println(textFieldArrayListValues.size() - 1);
+
+            textFieldArrayList.get(textFieldArrayList.size() - 1).setText(textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)));
+
+
+        });
         //endregion
 
         //region Button Redo
@@ -608,7 +631,9 @@ public class Main extends Application {
 
         //region Button Change Font
         //Open a new window to select font sizes of the game
-        changeFont.setOnMouseClicked(e -> {
+        changeFont.setOnMouseClicked(e ->
+
+        {
             //Create the components of the scene.
             VBox fontBox = new VBox();
             fontBox.setAlignment(Pos.CENTER);
@@ -629,6 +654,9 @@ public class Main extends Application {
                 for (TextField text : logic.getTextFields()) {
                     text.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
                 }
+                for (Text target : targetValues) {
+                    target.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+                }
                 Window window = ((Node) (a.getSource())).getScene().getWindow();
                 if (window instanceof Stage) {
                     ((Stage) window).close();
@@ -639,6 +667,9 @@ public class Main extends Application {
                 for (TextField text : logic.getTextFields()) {
                     text.setFont(Font.font("Verdana", FontWeight.BOLD, 25));
                 }
+                for (Text target : targetValues) {
+                    target.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+                }
                 Window window = ((Node) (a.getSource())).getScene().getWindow();
                 if (window instanceof Stage) {
                     ((Stage) window).close();
@@ -648,6 +679,9 @@ public class Main extends Application {
             largeB.setOnMouseClicked(a -> {
                 for (TextField text : logic.getTextFields()) {
                     text.setFont(Font.font("Verdana", FontWeight.BOLD, 33));
+                }
+                for (Text target : targetValues) {
+                    target.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
                 }
                 Window window = ((Node) (a.getSource())).getScene().getWindow();
                 if (window instanceof Stage) {
@@ -672,7 +706,9 @@ public class Main extends Application {
         //endregion
 
         //region Button Load from File
-        loadFile.setOnMouseClicked(e -> {
+        loadFile.setOnMouseClicked(e ->
+
+        {
             //region Get the Game Ready
             //Open the text file.
             FileChooser fileChooser = new FileChooser();
@@ -964,7 +1000,9 @@ public class Main extends Application {
         //endregion
 
         //region Load from Text
-        loadText.setOnMouseClicked(e -> {
+        loadText.setOnMouseClicked(e ->
+
+        {
             //Create the input text pane.
             Button inputDone = new Button("Done");
             inputDone.setMinSize(60, 30);
@@ -1309,12 +1347,14 @@ public class Main extends Application {
 
         //region Timer
         start();
-        time.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                timerLabel.setText(time.getText());
-            }
-        });
+        time.textProperty().
+
+                addListener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        timerLabel.setText(time.getText());
+                    }
+                });
         //endregion
         //endregion
 
