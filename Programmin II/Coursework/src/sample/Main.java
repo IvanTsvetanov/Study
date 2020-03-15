@@ -46,6 +46,7 @@ public class Main extends Application {
     Timer timer = new Timer();
     TextField time = new TextField("0");
     boolean flagMistakes = false;
+    static int whereAreWe = 0;
     //endregion
 
     @Override
@@ -598,7 +599,11 @@ public class Main extends Application {
         //Arraylists to hold values and textfields.
         ArrayList<TextField> textFieldArrayList = new ArrayList<>();
         ArrayList<String> textFieldArrayListValues = new ArrayList<>();
+        ArrayList<TextField> textFieldsRedo = new ArrayList<>();
+        ArrayList<String> textFieldsValuesRedo = new ArrayList<>();
+
         undo.setDisable(true);
+        redo.setDisable(true);
 
         //Listener to update the textfields.
         for (TextField text : logic.getTextFields()) {
@@ -619,9 +624,13 @@ public class Main extends Application {
                         }
                     }
                     //Disable button when there is nothing to undo.
-                    if(textFieldArrayListValues.size() == 1)
+                    if(textFieldArrayListValues.size() == 0)
                         undo.setDisable(true);
                     else undo.setDisable(false);
+
+                    if(textFieldsValuesRedo.size() == 0)
+                        redo.setDisable(true);
+                    else redo.setDisable(false);
                 }
             });
         }
@@ -630,18 +639,35 @@ public class Main extends Application {
             //Remove the text from the last element.
             textFieldArrayList.get((textFieldArrayList.size() - 1)).setText("");
 
-            //Remove the last element.
+            //Remove the last element. (Add redo values)
+            textFieldsRedo.add(textFieldArrayList.get(textFieldArrayList.size()-1));
             textFieldArrayList.remove(textFieldArrayList.size()-1);
+            textFieldsValuesRedo.add(textFieldArrayListValues.get(textFieldArrayListValues.size()-1));
             textFieldArrayListValues.remove(textFieldArrayListValues.size()-1);
+
+            if(textFieldsValuesRedo.size() == 0)
+                redo.setDisable(true);
+            else redo.setDisable(false);
+
+            if(textFieldArrayListValues.size() == 0)
+                undo.setDisable(true);
+            else undo.setDisable(false);
 
             //Set the new text.
             if(textFieldArrayList.size() > 0)
-            textFieldArrayList.get(textFieldArrayList.size() - 1).setText(textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)));
+                textFieldArrayList.get(textFieldArrayList.size() - 1).setText(textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)));
         });
         //endregion
 
         //region Button Redo
-
+        redo.setOnMouseClicked(e -> {
+            textFieldsRedo.get(textFieldsRedo.size() - 1).setText(textFieldsValuesRedo.get((textFieldsValuesRedo.size() - 1)));
+            textFieldsRedo.remove(textFieldsRedo.size()-1);
+            textFieldsValuesRedo.remove(textFieldsValuesRedo.size()-1);
+            if(textFieldsValuesRedo.size() == 0)
+                redo.setDisable(true);
+            else redo.setDisable(false);
+        });
         //endregion
 
         //region Button Change Font
