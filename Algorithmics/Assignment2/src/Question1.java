@@ -30,6 +30,7 @@ public class Question1 {
                     5 * thirdDigit +
                     7 * fourthDigit +
                     11 * fifthDigit) % 47;
+
             //Lambda expression to add the integer to its specified ArrayList.
             myMap.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
         }
