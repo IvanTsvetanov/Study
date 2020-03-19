@@ -38,7 +38,7 @@ public class Question1 {
         //Iterate through the map to see the values.
         int i = 1;
         Integer lastKey = 0;
-        ArrayList<Integer> numberOfValues= new ArrayList<>();
+        ArrayList<Integer> numberOfValues = new ArrayList<>();
 
         for (java.util.Map.Entry<Integer, ArrayList<Integer>> entry : myMap.entrySet()) {
             Integer myKey = entry.getKey();
@@ -46,11 +46,10 @@ public class Question1 {
             for (Integer singleValue : myValues) {
                 //Print out everything.
                 //The counter is there so we can easily see the number of elements under each key.
-                if(lastKey == myKey) {
+                if (lastKey == myKey) {
                     //System.out.println("key : " + myKey + " value : " + singleValue + " number : " + i);
                     i++;
-                }
-                else {
+                } else {
                     i = 1;
                     //System.out.println("key : " + myKey + " value : " + singleValue + " number : " + i);
                     lastKey = myKey;
@@ -65,8 +64,10 @@ public class Question1 {
         //that there exists a number x between 0 and 46 for which we can find at least 43
         //numbers among the given 2000, whose hash value is exactly x.
         Collections.sort(numberOfValues, Collections.reverseOrder());
-        for(Integer number : numberOfValues) {
+        for (Integer number : numberOfValues) {
             System.out.println(number);
         }
     }
 }
+
+    
