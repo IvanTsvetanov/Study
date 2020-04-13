@@ -6,13 +6,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.Optional;
 
 /*
     Responsible for launching and managing the Main Menu.
@@ -23,11 +30,16 @@ public class Launch extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Main Menu");
+        //Set the icon for the window.
+        primaryStage.getIcons().add(new Image("file:src\\Images\\icon.png"));
 
+        //Create the panes to build up the Main Menu.
+        //The main pane - holds the structure of the whole window scene.
         GridPane mainPane = new GridPane();
         mainPane.setAlignment(Pos.CENTER);
         mainPane.setVgap(50);
         mainPane.setPadding(new Insets(10));
+        mainPane.setStyle("-fx-background-color: linear-gradient(from 0% 0% to 100% 150%, repeat, mediumpurple 0%, gray 50%);");
 
         VBox buttonBox = new VBox();
         buttonBox.setAlignment(Pos.CENTER);
@@ -43,7 +55,7 @@ public class Launch extends Application {
         //Create the Main Menu text
         Text titleField = new Text("MAIN MENU");
         titleField.setStyle("-fx-font: 50px Tahoma;\n" +
-                "    -fx-fill: linear-gradient(from 0% 0% to 100% 150%, repeat, red 0%, green 50%);\n" +
+                "    -fx-fill: linear-gradient(from 0% 0% to 100% 150%, repeat, beige 20%, beige 50%);\n" +
                 "    -fx-stroke: black;\n" +
                 "    -fx-stroke-width: 1;");
         mainPane.add(titleField, 0, 0);
@@ -60,6 +72,21 @@ public class Launch extends Application {
 
         Button btnExit = new Button("Exit");
         btnExit.setMinSize(200, 40);
+        //Handler for exiting the Main Menu
+        btnExit.setOnMouseClicked(e -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to exit?");
+
+            alert.setTitle("Exit confirmation");
+            alert.setHeaderText("Confirmation");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                Stage stage = (Stage) btnExit.getScene().getWindow();
+                stage.close();
+            }
+        });
 
         buttonBox.getChildren().addAll(btnLoadExample,
                 btnLoadFromFile,
