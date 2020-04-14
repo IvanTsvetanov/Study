@@ -1,9 +1,13 @@
 package MainMenu;
 
+import ExamplePuzzle.ExamplePuzzle;
+import javafx.animation.ParallelTransition;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -96,10 +100,20 @@ public class Launch extends Application {
         exitBtnBox.getChildren().add(btnExit);
         mainPane.add(exitBtnBox, 0, 2);
 
+        //Change the scene to the example puzzle scene
+        btnLoadExample.setOnMouseClicked(e -> {
+            ExamplePuzzle a = new ExamplePuzzle();
+            primaryStage.setScene(a.buildExampleScene());
+            primaryStage.setMinWidth(720);
+            primaryStage.setMinHeight(670);
+        });
+
         //Basic scene logic
-        Scene mainScene = new Scene(mainPane, 300, 400);
+        Scene mainScene = new Scene(mainPane, 300, 450);
         primaryStage.setScene(mainScene);
-        primaryStage.setResizable(false);
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(450);
+        mainPane.requestFocus();
         primaryStage.show();
     }
 
