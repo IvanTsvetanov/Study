@@ -66,7 +66,7 @@ public class Cage {
     //endregion
 
     //region Methods
-    public ArrayList<TextField> getCluster() {
+    public ArrayList<TextField> getCage() {
         return cage;
     }
 
@@ -123,18 +123,6 @@ public class Cage {
                 cageColorPointer += 3;
             }
         }
-
-        /*
-        int num = rand.nextInt(bound);
-
-        String color = colors.get(num);
-        for (TextField text : cluster)
-            text.setStyle("-fx-background-color: " + color + ";");
-
-        setClusterColor("-fx-background-color: " + color + ";");
-
-        colors.remove(num);
-        bound--;*/
     }
 
     public void setCageColorNotRandom(String color) {

@@ -12,15 +12,20 @@ import java.util.ArrayList;
 public class GameLogic {
     //Holds the size of the game grid.
     private int size;
+
     //Holds all the textFields of the game grid.
     private ArrayList<TextField> gameFields = new ArrayList<>();
+
     //Holds all the cages of the game grid.
     private ArrayList<Cage> cages = new ArrayList<>();
-    //Holds all the target values of the game grid.
+
+    //Holds all the target values of the cages of the game grid.
     private ArrayList<Text> targetValues = new ArrayList<>();
+
     //Holds all the textFields, but this time, in a two-dimensional array for easier access
     // for certain operations.
     private TextField[][] textFieldHolder;
+
     //Holds the specific values of the game fields.
     private int[][] valueHolder;
 

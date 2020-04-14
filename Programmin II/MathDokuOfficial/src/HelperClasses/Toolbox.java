@@ -18,4 +18,13 @@ public class Toolbox {
         );
         return button;
     }
+
+    public Cage normaliseCage (Cage cage, GameLogic gameLogic, String targetValue, int numTargetValue) {
+        cage.setCageColor();
+        gameLogic.addCage(cage);
+        gameLogic.getTargetValues().get(numTargetValue).setText(targetValue);
+        cage.setCageTargetValue(gameLogic.getTargetValues().get(numTargetValue).getText());
+
+        return cage;
+    }
 }

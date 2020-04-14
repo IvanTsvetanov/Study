@@ -1,5 +1,6 @@
 package ExamplePuzzle;
 
+import HelperClasses.Cage;
 import HelperClasses.GameLogic;
 import HelperClasses.Toolbox;
 import javafx.application.Application;
@@ -187,8 +188,10 @@ public class ExamplePuzzle  {
                 rec.setFill(Color.WHITE);
                 rec.setStrokeWidth(3);
                 rec.setStrokeType(StrokeType.CENTERED);
+                rec.widthProperty().bind(canvasPane.widthProperty().divide(sizeOfGrid + 1));
+                rec.heightProperty().bind(canvasPane.heightProperty().divide(sizeOfGrid + 1));
 
-                //Add the text areas
+                //Add the textFields (game fields)
                 TextField text = new TextField();
                 text.setAlignment(Pos.CENTER);
                 text.maxWidthProperty().bind(canvasPane.widthProperty().divide(sizeOfGrid + 1));
@@ -203,7 +206,8 @@ public class ExamplePuzzle  {
                 targetPane.setMaxSize(10, 10);
                 gameLogic.addTargetValue(target);
 
-                //Stacks the textfield on top of the rectangles
+                //Stacks the textfield (game field) on top of the rectangles,
+                // so the text from the game field can be properly seen.
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().add(rec);
                 stackPane.setAlignment(Pos.TOP_LEFT);
@@ -213,12 +217,10 @@ public class ExamplePuzzle  {
                 canvasPane.add(stackPane, i, j, 1, 1);
                 text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
 
-                rec.widthProperty().bind(canvasPane.widthProperty().divide(sizeOfGrid + 1));
-                rec.heightProperty().bind(canvasPane.heightProperty().divide(sizeOfGrid + 1));
-
                 //region Get easier access to rows and cols
                 gameLogic.addToGameFieldArray(j, i, text);
 
+                //Sets the values of the game fields.
                 final int row = i;
                 final int col = j;
                 text.textProperty().addListener(new ChangeListener<String>() {
@@ -259,6 +261,49 @@ public class ExamplePuzzle  {
                 //endregion
             }
         }
+        //endregion
+
+        //region Adding the cages
+        //Add the fields to the cages
+        Cage cage1 = new Cage();
+        cage1.addField(gameLogic.getGameFields().get(0));
+        cage1.addField(gameLogic.getGameFields().get(1));
+        cage1.addField(gameLogic.getGameFields().get(2));
+        cage1 = toolbox.normaliseCage(cage1, gameLogic, "8*", 0);
+
+        Cage cage2 = new Cage();
+        cage2.addField(gameLogic.getGameFields().get(3));
+        cage2 = toolbox.normaliseCage(cage2, gameLogic, "3", 3);
+
+        Cage cage3 = new Cage();
+        cage3.addField(gameLogic.getGameFields().get(4));
+        cage3.addField(gameLogic.getGameFields().get(8));
+        cage3 = toolbox.normaliseCage(cage3, gameLogic, "1-", 4);
+
+        Cage cage4 = new Cage();
+        cage4.addField(gameLogic.getGameFields().get(5));
+        cage4.addField(gameLogic.getGameFields().get(9));
+        cage4 = toolbox.normaliseCage(cage4, gameLogic, "5+", 5);
+
+        Cage cage5 = new Cage();
+        cage5.addField(gameLogic.getGameFields().get(6));
+        cage5 = toolbox.normaliseCage(cage5, gameLogic, "2", 6);
+
+        Cage cage6 = new Cage();
+        cage6.addField(gameLogic.getGameFields().get(7));
+        cage6.addField(gameLogic.getGameFields().get(11));
+        cage6 = toolbox.normaliseCage(cage6, gameLogic, "2/", 7);
+
+        Cage cage7 = new Cage();
+        cage7.addField(gameLogic.getGameFields().get(12));
+        cage7.addField(gameLogic.getGameFields().get(13));
+        cage7 = toolbox.normaliseCage(cage7, gameLogic, "5+", 12);
+
+        Cage cage8 = new Cage();
+        cage8.addField(gameLogic.getGameFields().get(10));
+        cage8.addField(gameLogic.getGameFields().get(14));
+        cage8.addField(gameLogic.getGameFields().get(15));
+        cage8 = toolbox.normaliseCage(cage8, gameLogic, "8+", 10);
         //endregion
 
         Scene mainScene = new Scene(mainPane, 670, 600);
