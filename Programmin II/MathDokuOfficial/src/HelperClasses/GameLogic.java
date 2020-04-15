@@ -86,4 +86,10 @@ public class GameLogic {
     public void setValue(int i, int j, int value) {
         valueHolder[i][j] = value;
     }
+
+    //Returns all the values of the game grid as a two-dimensional matrix
+    public int[][] getValueHolder() {
+        return valueHolder;
+    }
+
 }

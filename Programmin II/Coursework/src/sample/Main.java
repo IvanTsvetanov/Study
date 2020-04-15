@@ -610,25 +610,25 @@ public class Main extends Application {
             text.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    if (!text.getText().equals("") && !text.equals(null) ) {
-                        if(textFieldArrayListValues.size() < 2) {
+                    if (!text.getText().equals("") && !text.equals(null)) {
+                        if (textFieldArrayListValues.size() < 2) {
                             textFieldArrayList.add(text);
                             textFieldArrayListValues.add(text.getText());
                         }
                         //Takes care of adding values to the same textfield
                         else if (textFieldArrayListValues.size() >= 2) {
-                            if (!textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)).equals(text.getText())){
+                            if (!textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)).equals(text.getText())) {
                                 textFieldArrayList.add(text);
                                 textFieldArrayListValues.add(text.getText());
                             }
                         }
                     }
                     //Disable button when there is nothing to undo.
-                    if(textFieldArrayListValues.size() == 0)
+                    if (textFieldArrayListValues.size() == 0)
                         undo.setDisable(true);
                     else undo.setDisable(false);
 
-                    if(textFieldsValuesRedo.size() == 0)
+                    if (textFieldsValuesRedo.size() == 0)
                         redo.setDisable(true);
                     else redo.setDisable(false);
                 }
@@ -640,21 +640,21 @@ public class Main extends Application {
             textFieldArrayList.get((textFieldArrayList.size() - 1)).setText("");
 
             //Remove the last element. (Add redo values)
-            textFieldsRedo.add(textFieldArrayList.get(textFieldArrayList.size()-1));
-            textFieldArrayList.remove(textFieldArrayList.size()-1);
-            textFieldsValuesRedo.add(textFieldArrayListValues.get(textFieldArrayListValues.size()-1));
-            textFieldArrayListValues.remove(textFieldArrayListValues.size()-1);
+            textFieldsRedo.add(textFieldArrayList.get(textFieldArrayList.size() - 1));
+            textFieldArrayList.remove(textFieldArrayList.size() - 1);
+            textFieldsValuesRedo.add(textFieldArrayListValues.get(textFieldArrayListValues.size() - 1));
+            textFieldArrayListValues.remove(textFieldArrayListValues.size() - 1);
 
-            if(textFieldsValuesRedo.size() == 0)
+            if (textFieldsValuesRedo.size() == 0)
                 redo.setDisable(true);
             else redo.setDisable(false);
 
-            if(textFieldArrayListValues.size() == 0)
+            if (textFieldArrayListValues.size() == 0)
                 undo.setDisable(true);
             else undo.setDisable(false);
 
             //Set the new text.
-            if(textFieldArrayList.size() > 0)
+            if (textFieldArrayList.size() > 0)
                 textFieldArrayList.get(textFieldArrayList.size() - 1).setText(textFieldArrayListValues.get((textFieldArrayListValues.size() - 1)));
         });
         //endregion
@@ -662,9 +662,9 @@ public class Main extends Application {
         //region Button Redo
         redo.setOnMouseClicked(e -> {
             textFieldsRedo.get(textFieldsRedo.size() - 1).setText(textFieldsValuesRedo.get((textFieldsValuesRedo.size() - 1)));
-            textFieldsRedo.remove(textFieldsRedo.size()-1);
-            textFieldsValuesRedo.remove(textFieldsValuesRedo.size()-1);
-            if(textFieldsValuesRedo.size() == 0)
+            textFieldsRedo.remove(textFieldsRedo.size() - 1);
+            textFieldsValuesRedo.remove(textFieldsValuesRedo.size() - 1);
+            if (textFieldsValuesRedo.size() == 0)
                 redo.setDisable(true);
             else redo.setDisable(false);
         });
@@ -1389,7 +1389,6 @@ public class Main extends Application {
         //region Timer
         start();
         time.textProperty().
-
                 addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

@@ -25,6 +25,8 @@ import javafx.stage.Stage;
 
 import java.util.Optional;
 
+import static HelperClasses.Toolbox.timer;
+
 /*
     Responsible for launching and managing the Main Menu.
  */
@@ -100,12 +102,16 @@ public class Launch extends Application {
         exitBtnBox.getChildren().add(btnExit);
         mainPane.add(exitBtnBox, 0, 2);
 
-        //Change the scene to the example puzzle scene
+        //Change the scene to the example puzzle scene.
         btnLoadExample.setOnMouseClicked(e -> {
             ExamplePuzzle a = new ExamplePuzzle();
             primaryStage.setScene(a.buildExampleScene());
             primaryStage.setMinWidth(720);
             primaryStage.setMinHeight(670);
+            //Automatically stop the timer when exiting.
+            primaryStage.setOnCloseRequest(event -> {
+                timer.cancel();
+            });
         });
 
         //Basic scene logic
