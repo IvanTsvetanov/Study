@@ -66,7 +66,7 @@ public class Cage {
     //endregion
 
     //region Methods
-    public ArrayList<TextField> getCage() {
+    public ArrayList<TextField> getFields() {
         return cage;
     }
 
@@ -74,7 +74,6 @@ public class Cage {
         this.cage.add(field);
     }
 
-    //text.setStyle("-fx-background-color: ;");
     public void setCageColor() {
         //Check for the base cases
         if (cageColorPointer == 0) {

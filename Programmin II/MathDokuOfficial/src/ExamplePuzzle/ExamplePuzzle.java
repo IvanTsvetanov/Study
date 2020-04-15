@@ -5,7 +5,6 @@ import HelperClasses.GameLogic;
 import HelperClasses.Toolbox;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -81,10 +80,10 @@ public class ExamplePuzzle {
         showMistakes.prefWidthProperty().bind(mainPane.widthProperty());
         showMistakes.setMaxSize(250, 60);
 
-        Button solve = new Button("Solve");
-        solve.setMinSize(100, 30);
-        solve.prefWidthProperty().bind(mainPane.widthProperty());
-        solve.setMaxSize(250, 60);
+        Button stopTimer = new Button("Stop Timer");
+        stopTimer.setMinSize(100, 30);
+        stopTimer.prefWidthProperty().bind(mainPane.widthProperty());
+        stopTimer.setMaxSize(250, 60);
 
         Label timerLabel = new Label("00:00");
         timerLabel.setMinSize(100, 30);
@@ -99,7 +98,7 @@ public class ExamplePuzzle {
         bottomComponents.add(redo, 0, 1, 1, 1);
         bottomComponents.add(clear, 1, 0, 1, 1);
         bottomComponents.add(showMistakes, 1, 1, 1, 1);
-        bottomComponents.add(solve, 2, 0, 1, 1);
+        bottomComponents.add(stopTimer, 2, 0, 1, 1);
         bottomComponents.add(timerLabel, 2, 1, 1, 1);
         bottomComponents.setAlignment(Pos.TOP_LEFT);
 
@@ -109,47 +108,47 @@ public class ExamplePuzzle {
         //Add the side elements and format them
         GridPane sideComponents = new GridPane();
 
-        sideComponents.setPadding(new Insets(10, 10, 10, 10));
+        sideComponents.setPadding(new Insets(10, 20, 10, 20));
         sideComponents.setVgap(20);
-        sideComponents.setHgap(20);
+        sideComponents.setHgap(30);
+        sideComponents.setAlignment(Pos.BOTTOM_CENTER);
 
-        int minHeight = (int) (sideComponents.heightProperty().getValue() / 50);
-        Button loadFile = new Button("Load Puzzle from File");
-        loadFile.setMinSize(150, 30);
-        loadFile.prefHeightProperty().bind(mainPane.heightProperty());
-        loadFile.setMaxSize(150, 50);
+        Button manualResizing = new Button("Turn On Manual Resizing");
+        manualResizing.setMinSize(150, 30);
+        manualResizing.prefHeightProperty().bind(mainPane.heightProperty());
+        manualResizing.setMaxSize(150, 50);
 
-        Button loadText = new Button("Load Puzzle from Text");
-        loadText.setMinSize(150, 30);
-        loadText.prefHeightProperty().bind(mainPane.heightProperty());
-        loadText.setMaxSize(150, 50);
+        Button selectWindowSize = new Button("Select Window Size");
+        selectWindowSize.setMinSize(150, 30);
+        selectWindowSize.prefHeightProperty().bind(mainPane.heightProperty());
+        selectWindowSize.setMaxSize(150, 50);
 
         Button changeFont = new Button("Change Font");
         changeFont.setMinSize(150, 30);
         changeFont.prefHeightProperty().bind(mainPane.heightProperty());
         changeFont.setMaxSize(150, 50);
 
-        sideComponents.add(loadFile, 0, 0, 2, 1);
-        sideComponents.add(loadText, 0, 1, 2, 1);
+        sideComponents.add(manualResizing, 0, 0, 2, 1);
+        sideComponents.add(selectWindowSize, 0, 1, 2, 1);
         sideComponents.add(changeFont, 0, 2, 2, 1);
 
-        //Add randomly generate button
-        HBox randHbox = new HBox();
-        Button randGen = new Button("Randomly Generate Puzzle");
-        randGen.setMinSize(130, 80);
-        randHbox.getChildren().add(randGen);
-        randHbox.setAlignment(Pos.CENTER);
+        //Add return to main menu button
+        HBox returnToMenu = new HBox();
+        Button returnMenu = new Button("Return to Main Menu");
+        returnMenu.setMinSize(150, 83);
+        returnToMenu.getChildren().add(returnMenu);
+        returnToMenu.setAlignment(Pos.CENTER);
         //endregion
 
-        //region Create and add dial buttons
+        //region Create and add dial buttons.
         int x = 0;
         int y = 3;
         for (int i = 1; i < 9; i++) {
-            //Create the button
+            //Create the button.
             Button button = toolbox.createDialButton(Integer.toString(i));
             button.prefWidthProperty().bind(sideComponents.widthProperty());
             button.prefHeightProperty().bind(sideComponents.heightProperty());
-            //Add the buttons to a list for easy access
+            //Add the buttons to a list for easy access.
             playButtons.add(button);
 
             //Add buttons to the grid
@@ -179,7 +178,7 @@ public class ExamplePuzzle {
         mainPane.add(canvasPane, 0, 0, 1, 1);
         mainPane.add(bottomComponents, 0, 1, 1, 1);
         mainPane.add(sideComponents, 1, 0, 1, 1);
-        mainPane.add(randHbox, 1, 1, 1, 1);
+        mainPane.add(returnToMenu, 1, 1, 1, 1);
         //endregion
 
         //region Draw Game Grid
@@ -416,7 +415,60 @@ public class ExamplePuzzle {
         //endregion
 
         //region Button Show Mistakes
-        showMistakes.setOnMousePressed(e -> {
+        //ADD FLAG SO USER CAN ACTIVATE/DEACTIVATE SHOW MISTAKES BUTTON
+        //FLASHING RED OBSOLETE?
+        for (TextField text : gameLogic.getGameFields()) {
+            text.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    //Check if the cages are valid.
+                    for (int z = 0; z < gameLogic.getCages().size(); z++) {
+                        if (gameLogic.getCages().get(z).checkIfSolved() == false) {
+                            for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
+                                //Holds the previous style of the game field, so that we don't lose the BG color.
+                                String style = gameLogic.getCages().get(z).getFields().get(i).getStyle();
+                                gameLogic.getCages().get(z).getFields().get(i).setStyle("-fx-text-fill: red;" + style);
+                            }
+                        } else {
+                            for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
+                                gameLogic.getCages().get(z).setCageColorNotRandom(gameLogic.getCages().get(z).getCageColor());
+                            }
+                        }
+                    }
+
+                    //Have somewhere to store
+                    int[] col;
+                    for (int i = 0; i < sizeOfGrid; i++) {
+                        col = toolbox.getColumn(gameLogic.getValueHolder(), i);
+                        //Check if the col contains zeros (i.e. not fully populated)
+                        if (toolbox.duplicates(col) == true) {
+                            for (int j = 0; j < sizeOfGrid; j++) {
+                                //Holds the previous style of the game field, so that we don't lose the BG color.
+                                String style = gameLogic.getGameField(j, i).getStyle();
+                                gameLogic.getGameField(j, i).setStyle("-fx-text-fill: red;" + style);
+                            }
+                        }
+                    }
+
+                    //Check if all the rows are valid.
+                    int[] row;
+                    for (int i = 0; i < sizeOfGrid; i++) {
+                        row = toolbox.getRow(gameLogic.getValueHolder(), i);
+                        if (toolbox.duplicates(row) == true) {
+                            for (int j = 0; j < sizeOfGrid; j++) {
+                                //Holds the previous style of the game field, so that we don't lose the BG color.
+                                String style = gameLogic.getGameField(i, j).getStyle();
+                                gameLogic.getGameField(i, j).setStyle("-fx-text-fill: red;" + style);
+                            }
+                        }
+                    }
+
+                }
+            });
+        }
+
+        showMistakes.setOnMousePressed(a -> {
+            //CREATE FLAG
             //Flash mistakes, and change color of target value.
             //Check if all the columns are valid.
             int[] col;
@@ -430,7 +482,7 @@ public class ExamplePuzzle {
                 }
             }
 
-            ////Check if all the rows are valid.
+            //Check if all the rows are valid.
             int[] row;
             for (int i = 0; i < sizeOfGrid; i++) {
                 row = toolbox.getRow(gameLogic.getValueHolder(), i);
@@ -444,8 +496,8 @@ public class ExamplePuzzle {
             //Check if the cages are valid.
             for (int z = 0; z < gameLogic.getCages().size(); z++) {
                 if (gameLogic.getCages().get(z).checkIfSolved() == false) {
-                    for (int i = 0; i < gameLogic.getCages().get(z).getCage().size(); i++) {
-                        gameLogic.getCages().get(z).getCage().get(i).setStyle("-fx-background-color: red;");
+                    for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
+                        gameLogic.getCages().get(z).getFields().get(i).setStyle("-fx-background-color: red;");
                     }
                 }
             }
@@ -649,7 +701,8 @@ public class ExamplePuzzle {
                         boolean isOneDigitSecs = (seconds >= 0 && seconds <= 9);
                         boolean isOneDigitMins = (minutes >= 0 && minutes <= 9);
 
-                        if (isOneDigitMins && isOneDigitSecs) timerLabel.setText("0" + minutes + ":" + "0" + seconds);
+                        if (isOneDigitMins && isOneDigitSecs)
+                            timerLabel.setText("0" + minutes + ":" + "0" + seconds);
                         else if (isOneDigitMins) timerLabel.setText("0" + minutes + ":" + seconds);
                         else if (isOneDigitSecs) timerLabel.setText(minutes + ":" + "0" + seconds);
                         else timerLabel.setText(minutes + ":" + seconds);
@@ -657,8 +710,9 @@ public class ExamplePuzzle {
                 });
         //endregion
 
-        Scene mainScene = new Scene(mainPane, 670, 600);
+        Scene mainScene = new Scene(mainPane, 690, 600);
         return mainScene;
     }
 }
+
 

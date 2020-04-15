@@ -24,10 +24,10 @@ public class Toolbox {
         Button button = new Button(btnText);
         button.setStyle(
                 "-fx-background-radius: 5em; " +
-                        "-fx-min-width: 50px; " +
-                        "-fx-min-height: 50px; " +
-                        "-fx-max-width: 65px; " +
-                        "-fx-max-height: 65px;"
+                        "-fx-min-width: 40px; " +
+                        "-fx-min-height: 40px; " +
+                        "-fx-max-width: 60px; " +
+                        "-fx-max-height: 60px;"
         );
         return button;
     }
