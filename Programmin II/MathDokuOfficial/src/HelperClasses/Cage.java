@@ -50,17 +50,7 @@ public class Cage {
             add("deeppink");
             add("pink");
             add("lightpink");
-            /*add("lightblue");
-            add("orange");
-            add("beige");
-            add("blueviolet");
-            add("brown");
-            add("cyan");
-            add("khaki");
-            add("yellowgreen");
-            add("slateblue");
-            add("salmon");
-            add("gold");*/
+
         }
     };
     //endregion

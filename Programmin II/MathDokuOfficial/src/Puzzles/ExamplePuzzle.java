@@ -1,4 +1,4 @@
-package ExamplePuzzle;
+package Puzzles;
 
 import HelperClasses.Cage;
 import HelperClasses.GameLogic;
@@ -31,6 +31,11 @@ import java.util.Optional;
 
 import static HelperClasses.Toolbox.timer;
 
+/*
+    Creates a pre-build puzzle as an example.
+    Has all functionalities as a normal puzzle.
+ */
+
 public class ExamplePuzzle {
     //The pane that holds all the components.
     private GridPane mainPane = new GridPane();
@@ -50,7 +55,7 @@ public class ExamplePuzzle {
     //Showing mistakes button flag for turning mode on/off.
     private boolean mistakesFlag = false;
     //Listener enabling the user to see his mistakes as he enters numbers.
-    ChangeListener listener = new ChangeListener() {
+    ChangeListener textFieldChangeL = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             //Check if the cages are valid.
@@ -455,7 +460,7 @@ public class ExamplePuzzle {
 
                 //Change the color of the numbers in the game fields as the user enters them.
                 for (TextField text : gameLogic.getGameFields()) {
-                    text.textProperty().addListener(listener);
+                    text.textProperty().addListener(textFieldChangeL);
                 }
             } else {
                 //Change the name of the button to indicate that we are exiting the mode.
@@ -463,7 +468,7 @@ public class ExamplePuzzle {
 
                 //Remove the listener so the mistakes the user makes no longer show up.
                 for (TextField text : gameLogic.getGameFields()) {
-                    text.textProperty().removeListener(listener);
+                    text.textProperty().removeListener(textFieldChangeL);
                 }
 
                 //Return to the normal color of the game fields.
@@ -704,7 +709,7 @@ public class ExamplePuzzle {
         });
         //endregion
 
-        //region Restart the timer
+        //region Button Restart the timer
         restartTimer.setOnMouseClicked(e -> {
             toolbox.restart();
             minutes = 0;
@@ -713,7 +718,7 @@ public class ExamplePuzzle {
         });
         //endregion
 
-        //region View Rules
+        //region Button View Rules
         viewRules.setOnMouseClicked(e -> {
             //Create the components for the scene.
             GridPane rulesMainPane = new GridPane();
@@ -747,6 +752,14 @@ public class ExamplePuzzle {
             newWindow.setResizable(false);
 
             newWindow.show();
+        });
+        //endregion
+
+        //region Button Change Colors
+        changeColors.setOnMouseClicked(e -> {
+            for(Cage cage : gameLogic.getCages()) {
+                cage.setCageColor();
+            }
         });
         //endregion
 

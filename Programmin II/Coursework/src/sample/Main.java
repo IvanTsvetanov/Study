@@ -747,9 +747,7 @@ public class Main extends Application {
         //endregion
 
         //region Button Load from File
-        loadFile.setOnMouseClicked(e ->
-
-        {
+        loadFile.setOnMouseClicked(e -> {
             //region Get the Game Ready
             //Open the text file.
             FileChooser fileChooser = new FileChooser();

@@ -1,29 +1,22 @@
 package MainMenu;
 
-import ExamplePuzzle.ExamplePuzzle;
-import javafx.animation.ParallelTransition;
+import Puzzles.ExamplePuzzle;
+import Puzzles.LoadFromFile;
 import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
+import java.io.File;
 import java.util.Optional;
 
 import static HelperClasses.Toolbox.timer;
@@ -107,6 +100,25 @@ public class Launch extends Application {
         btnLoadExample.setOnMouseClicked(e -> {
             ExamplePuzzle examplePuzzle = new ExamplePuzzle();
             primaryStage.setScene(examplePuzzle.buildExampleScene());
+            primaryStage.setMinWidth(720);
+            primaryStage.setMinHeight(670);
+            //Automatically stop the timer when exiting.
+            primaryStage.setOnCloseRequest(event -> {
+                timer.cancel();
+            });
+        });
+
+        //Change the scene to the puzzle loaded from file scene.
+        btnLoadFromFile.setOnMouseClicked(e -> {
+            LoadFromFile loadFromFile = new LoadFromFile();
+            //Open the file chooser so the user can select a file from which to import the puzzle.
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            File workFile = fileChooser.showOpenDialog(primaryStage);
+            String path = workFile.getAbsolutePath();
+
+            //Change the scene to the selected puzzle.
+            primaryStage.setScene(loadFromFile.buildSceneFromFile(path));
             primaryStage.setMinWidth(720);
             primaryStage.setMinHeight(670);
             //Automatically stop the timer when exiting.
