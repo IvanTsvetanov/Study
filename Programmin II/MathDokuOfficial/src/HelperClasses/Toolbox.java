@@ -95,7 +95,7 @@ public class Toolbox {
         timer.scheduleAtFixedRate(task, 1000, 1000);
     }
 
-    public void update() {
+    public void restart() {
         secondsPassed = 0;
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -120,4 +120,51 @@ public class Toolbox {
             });
         }
     };
+
+    //Checking for mistakes in the game fields.
+    public void checkForValidCages(GameLogic gameLogic) {
+        for (int z = 0; z < gameLogic.getCages().size(); z++) {
+            if (gameLogic.getCages().get(z).checkIfSolved() == false) {
+                for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
+                    //Holds the previous style of the game field, so that we don't lose the BG color.
+                    String style = gameLogic.getCages().get(z).getFields().get(i).getStyle();
+                    gameLogic.getCages().get(z).getFields().get(i).setStyle("-fx-text-fill: red;" + style);
+                }
+            } else {
+                //Return the normal colors.
+                for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
+                    gameLogic.getCages().get(z).setCageColorNotRandom(gameLogic.getCages().get(z).getCageColor());
+                }
+            }
+        }
+    }
+
+    public void checkForValidCols(int sizeOfGrid, GameLogic gameLogic) {
+        int[] col;
+        for (int i = 0; i < sizeOfGrid; i++) {
+            col = getColumn(gameLogic.getValueHolder(), i);
+            //Check if the col contains zeros (i.e. not fully populated)
+            if (duplicates(col) == true) {
+                for (int j = 0; j < sizeOfGrid; j++) {
+                    //Holds the previous style of the game field, so that we don't lose the BG color.
+                    String style = gameLogic.getGameField(j, i).getStyle();
+                    gameLogic.getGameField(j, i).setStyle("-fx-text-fill: red;" + style);
+                }
+            }
+        }
+    }
+
+    public void checkForValidRows(int sizeOfGrid, GameLogic gameLogic) {
+        int[] row;
+        for (int i = 0; i < sizeOfGrid; i++) {
+            row = getRow(gameLogic.getValueHolder(), i);
+            if (duplicates(row) == true) {
+                for (int j = 0; j < sizeOfGrid; j++) {
+                    //Holds the previous style of the game field, so that we don't lose the BG color.
+                    String style = gameLogic.getGameField(i, j).getStyle();
+                    gameLogic.getGameField(i, j).setStyle("-fx-text-fill: red;" + style);
+                }
+            }
+        }
+    }
 }

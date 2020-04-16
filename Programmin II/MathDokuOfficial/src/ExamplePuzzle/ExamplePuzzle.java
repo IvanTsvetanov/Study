@@ -3,6 +3,7 @@ package ExamplePuzzle;
 import HelperClasses.Cage;
 import HelperClasses.GameLogic;
 import HelperClasses.Toolbox;
+import MainMenu.Launch;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
@@ -41,11 +42,27 @@ public class ExamplePuzzle {
     private Toolbox toolbox = new Toolbox();
     //Stores information about the game.
     private GameLogic gameLogic = new GameLogic();
-    //Stores the size of the grid (NxN)
+    //Stores the size of the grid (NxN).
     private int sizeOfGrid = 4;
+    //Stores information about the timer.
     private static int minutes = 0;
     private static int seconds = 0;
+    //Showing mistakes button flag for turning mode on/off.
+    private boolean mistakesFlag = false;
+    //Listener enabling the user to see his mistakes as he enters numbers.
+    ChangeListener listener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            //Check if the cages are valid.
+            toolbox.checkForValidCages(gameLogic);
 
+            //Check if all the cols are valid.
+            toolbox.checkForValidCols(sizeOfGrid, gameLogic);
+
+            //Check if all the rows are valid.
+            toolbox.checkForValidRows(sizeOfGrid, gameLogic);
+        }
+    };
 
     public Scene buildExampleScene() {
 
@@ -80,10 +97,10 @@ public class ExamplePuzzle {
         showMistakes.prefWidthProperty().bind(mainPane.widthProperty());
         showMistakes.setMaxSize(250, 60);
 
-        Button stopTimer = new Button("Stop Timer");
-        stopTimer.setMinSize(100, 30);
-        stopTimer.prefWidthProperty().bind(mainPane.widthProperty());
-        stopTimer.setMaxSize(250, 60);
+        Button restartTimer = new Button("Restart Timer");
+        restartTimer.setMinSize(100, 30);
+        restartTimer.prefWidthProperty().bind(mainPane.widthProperty());
+        restartTimer.setMaxSize(250, 60);
 
         Label timerLabel = new Label("00:00");
         timerLabel.setMinSize(100, 30);
@@ -98,7 +115,7 @@ public class ExamplePuzzle {
         bottomComponents.add(redo, 0, 1, 1, 1);
         bottomComponents.add(clear, 1, 0, 1, 1);
         bottomComponents.add(showMistakes, 1, 1, 1, 1);
-        bottomComponents.add(stopTimer, 2, 0, 1, 1);
+        bottomComponents.add(restartTimer, 2, 0, 1, 1);
         bottomComponents.add(timerLabel, 2, 1, 1, 1);
         bottomComponents.setAlignment(Pos.TOP_LEFT);
 
@@ -113,23 +130,23 @@ public class ExamplePuzzle {
         sideComponents.setHgap(30);
         sideComponents.setAlignment(Pos.BOTTOM_CENTER);
 
-        Button manualResizing = new Button("Turn On Manual Resizing");
-        manualResizing.setMinSize(150, 30);
-        manualResizing.prefHeightProperty().bind(mainPane.heightProperty());
-        manualResizing.setMaxSize(150, 50);
+        Button viewRules = new Button("View Game Rules");
+        viewRules.setMinSize(150, 30);
+        viewRules.prefHeightProperty().bind(mainPane.heightProperty());
+        viewRules.setMaxSize(150, 50);
 
-        Button selectWindowSize = new Button("Select Window Size");
-        selectWindowSize.setMinSize(150, 30);
-        selectWindowSize.prefHeightProperty().bind(mainPane.heightProperty());
-        selectWindowSize.setMaxSize(150, 50);
+        Button changeColors = new Button("Change the Colors");
+        changeColors.setMinSize(150, 30);
+        changeColors.prefHeightProperty().bind(mainPane.heightProperty());
+        changeColors.setMaxSize(150, 50);
 
         Button changeFont = new Button("Change Font");
         changeFont.setMinSize(150, 30);
         changeFont.prefHeightProperty().bind(mainPane.heightProperty());
         changeFont.setMaxSize(150, 50);
 
-        sideComponents.add(manualResizing, 0, 0, 2, 1);
-        sideComponents.add(selectWindowSize, 0, 1, 2, 1);
+        sideComponents.add(viewRules, 0, 0, 2, 1);
+        sideComponents.add(changeColors, 0, 1, 2, 1);
         sideComponents.add(changeFont, 0, 2, 2, 1);
 
         //Add return to main menu button
@@ -140,7 +157,7 @@ public class ExamplePuzzle {
         returnToMenu.setAlignment(Pos.CENTER);
         //endregion
 
-        //region Create and add dial buttons.
+        //region Create and add dial buttons
         int x = 0;
         int y = 3;
         for (int i = 1; i < 9; i++) {
@@ -220,7 +237,7 @@ public class ExamplePuzzle {
                 stackPane.getChildren().add(targetPane);
 
                 canvasPane.add(stackPane, i, j, 1, 1);
-                text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
+                text.setFont(Font.font("Verdana", FontWeight.BOLD, 25));
 
                 //region Get easier access to rows and cols
                 gameLogic.addToGameFieldArray(j, i, text);
@@ -415,100 +432,49 @@ public class ExamplePuzzle {
         //endregion
 
         //region Button Show Mistakes
-        //ADD FLAG SO USER CAN ACTIVATE/DEACTIVATE SHOW MISTAKES BUTTON
-        //FLASHING RED OBSOLETE?
-        for (TextField text : gameLogic.getGameFields()) {
-            text.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    //Check if the cages are valid.
-                    for (int z = 0; z < gameLogic.getCages().size(); z++) {
-                        if (gameLogic.getCages().get(z).checkIfSolved() == false) {
-                            for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
-                                //Holds the previous style of the game field, so that we don't lose the BG color.
-                                String style = gameLogic.getCages().get(z).getFields().get(i).getStyle();
-                                gameLogic.getCages().get(z).getFields().get(i).setStyle("-fx-text-fill: red;" + style);
-                            }
-                        } else {
-                            for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
-                                gameLogic.getCages().get(z).setCageColorNotRandom(gameLogic.getCages().get(z).getCageColor());
-                            }
-                        }
-                    }
+        //Change the flag variable (so as to enter/exit "show mistakes" mode).
+        showMistakes.setOnMouseClicked(a -> {
+            //Flag for entering/exiting mistakes mode.
+            if (!mistakesFlag) {
+                mistakesFlag = true;
+                //Check the validity of the entries the user has made so far.
+                //Check if the cages are valid.
+                toolbox.checkForValidCages(gameLogic);
 
-                    //Have somewhere to store
-                    int[] col;
-                    for (int i = 0; i < sizeOfGrid; i++) {
-                        col = toolbox.getColumn(gameLogic.getValueHolder(), i);
-                        //Check if the col contains zeros (i.e. not fully populated)
-                        if (toolbox.duplicates(col) == true) {
-                            for (int j = 0; j < sizeOfGrid; j++) {
-                                //Holds the previous style of the game field, so that we don't lose the BG color.
-                                String style = gameLogic.getGameField(j, i).getStyle();
-                                gameLogic.getGameField(j, i).setStyle("-fx-text-fill: red;" + style);
-                            }
-                        }
-                    }
+                //Check if all the cols are valid.
+                toolbox.checkForValidCols(sizeOfGrid, gameLogic);
 
-                    //Check if all the rows are valid.
-                    int[] row;
-                    for (int i = 0; i < sizeOfGrid; i++) {
-                        row = toolbox.getRow(gameLogic.getValueHolder(), i);
-                        if (toolbox.duplicates(row) == true) {
-                            for (int j = 0; j < sizeOfGrid; j++) {
-                                //Holds the previous style of the game field, so that we don't lose the BG color.
-                                String style = gameLogic.getGameField(i, j).getStyle();
-                                gameLogic.getGameField(i, j).setStyle("-fx-text-fill: red;" + style);
-                            }
-                        }
-                    }
+                //Check if all the rows are valid.
+                toolbox.checkForValidRows(sizeOfGrid, gameLogic);
+            } else mistakesFlag = false;
 
+            //Enter "show mistakes" mode.
+            if (mistakesFlag) {
+                //Change the name of the button to indicate the mode the user is in.
+                showMistakes.setText("Hide Mistakes");
+
+                //Change the color of the numbers in the game fields as the user enters them.
+                for (TextField text : gameLogic.getGameFields()) {
+                    text.textProperty().addListener(listener);
                 }
-            });
-        }
+            } else {
+                //Change the name of the button to indicate that we are exiting the mode.
+                showMistakes.setText("Show Mistakes");
 
-        showMistakes.setOnMousePressed(a -> {
-            //CREATE FLAG
-            //Flash mistakes, and change color of target value.
-            //Check if all the columns are valid.
-            int[] col;
-            for (int i = 0; i < sizeOfGrid; i++) {
-                col = toolbox.getColumn(gameLogic.getValueHolder(), i);
-                //Check if the col contains zeros (i.e. not fully populated)
-                if (toolbox.duplicates(col) == true) {
-                    for (int j = 0; j < sizeOfGrid; j++) {
-                        gameLogic.getGameField(j, i).setStyle("-fx-background-color: red;");
-                    }
+                //Remove the listener so the mistakes the user makes no longer show up.
+                for (TextField text : gameLogic.getGameFields()) {
+                    text.textProperty().removeListener(listener);
                 }
-            }
 
-            //Check if all the rows are valid.
-            int[] row;
-            for (int i = 0; i < sizeOfGrid; i++) {
-                row = toolbox.getRow(gameLogic.getValueHolder(), i);
-                if (toolbox.duplicates(row) == true) {
-                    for (int j = 0; j < sizeOfGrid; j++) {
-                        gameLogic.getGameField(i, j).setStyle("-fx-background-color: red;");
-                    }
-                }
-            }
-
-            //Check if the cages are valid.
-            for (int z = 0; z < gameLogic.getCages().size(); z++) {
-                if (gameLogic.getCages().get(z).checkIfSolved() == false) {
+                //Return to the normal color of the game fields.
+                for (int z = 0; z < gameLogic.getCages().size(); z++) {
                     for (int i = 0; i < gameLogic.getCages().get(z).getFields().size(); i++) {
-                        gameLogic.getCages().get(z).getFields().get(i).setStyle("-fx-background-color: red;");
+                        gameLogic.getCages().get(z).setCageColorNotRandom(gameLogic.getCages().get(z).getCageColor());
                     }
                 }
             }
         });
-        //Return to the normal colors.
-        showMistakes.setOnMouseReleased(e -> {
-            toolbox.sleepForOneSecond();
-            for (int z = 0; z < gameLogic.getCages().size(); z++) {
-                gameLogic.getCages().get(z).setCageColorNotRandom(gameLogic.getCages().get(z).getCageColor());
-            }
-        });
+
 
         //endregion
 
@@ -528,7 +494,6 @@ public class ExamplePuzzle {
                 }
             }
         });
-        //endreion
         //endregion
 
         //region Button Undo
@@ -674,7 +639,7 @@ public class ExamplePuzzle {
             Scene inputScene = new Scene(fontBox, 225, 250);
             Stage newWindow = new Stage();
             newWindow.initModality(Modality.NONE);
-            newWindow.setTitle("Font");
+            newWindow.setTitle("Select");
             newWindow.setScene(inputScene);
             newWindow.setResizable(false);
 
@@ -710,7 +675,83 @@ public class ExamplePuzzle {
                 });
         //endregion
 
+        //region Button Return to Main Menu
+        returnMenu.setOnMouseClicked(e -> {
+            //Confirming the user wants to go to the Main Menu.
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to return to the Main Menu?");
+
+            alert.setTitle("Clear confirmation");
+            alert.setHeaderText("All progress will be lost!");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                //Close the current window
+                Stage stage = (Stage) mainPane.getScene().getWindow();
+                stage.close();
+
+                //Launch the Main Menu again
+                Launch launch = new Launch();
+                try {
+                    stage.setWidth(300);
+                    stage.setHeight(450);
+                    launch.start(stage);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        //endregion
+
+        //region Restart the timer
+        restartTimer.setOnMouseClicked(e -> {
+            toolbox.restart();
+            minutes = 0;
+            seconds = 0;
+            timerLabel.setText("00:00");
+        });
+        //endregion
+
+        //region View Rules
+        viewRules.setOnMouseClicked(e -> {
+            //Create the components for the scene.
+            GridPane rulesMainPane = new GridPane();
+            rulesMainPane.setAlignment(Pos.TOP_CENTER);
+            rulesMainPane.setPadding(new Insets(5));
+            rulesMainPane.setVgap(20);
+
+            TextArea gameRules = new TextArea();
+            gameRules.setFont(Font.font(18));
+            gameRules.setEditable(false);
+            gameRules.setText(
+                    "Game Rules:\n" +
+                            "1. Digits may appear only once in each row and column.\n" +
+                            "2. The grids are divided in cages with targets and operators.\n" +
+                            "3. Find a mathematical solution using the given operator \nto match the target.\n" +
+                            "4. Each puzzle has only 1 solution.\n" +
+                            "5. Please contact your psychiatrist in case of accute \nMathDoku addiction.\n\n" +
+                            "BONUS:\n" +
+                            "MathDoku puzzles are highly addictive.\n" +
+                            "Solving MathDoku puzzles will boost your brain power.\n" +
+                            "Solving MathDoku puzzles instead of math class is \nNOT recommended.");
+
+            rulesMainPane.add(gameRules, 0, 0, 2, 2);
+
+            //Create the scene and show it.
+            Scene inputScene = new Scene(rulesMainPane, 520, 250);
+            Stage newWindow = new Stage();
+            newWindow.initModality(Modality.NONE);
+            newWindow.setTitle("Rules");
+            newWindow.setScene(inputScene);
+            newWindow.setResizable(false);
+
+            newWindow.show();
+        });
+        //endregion
+
         Scene mainScene = new Scene(mainPane, 690, 600);
+        returnMenu.requestFocus();
         return mainScene;
     }
 }

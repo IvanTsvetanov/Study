@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class Launch extends Application {
         VBox buttonBox = new VBox();
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(20);
-        buttonBox.setPadding(new Insets(15, 0, 0,0));
+        buttonBox.setPadding(new Insets(15, 0, 0, 0));
 
         VBox exitBtnBox = new VBox();
         exitBtnBox.setAlignment(Pos.CENTER);
@@ -104,8 +105,8 @@ public class Launch extends Application {
 
         //Change the scene to the example puzzle scene.
         btnLoadExample.setOnMouseClicked(e -> {
-            ExamplePuzzle a = new ExamplePuzzle();
-            primaryStage.setScene(a.buildExampleScene());
+            ExamplePuzzle examplePuzzle = new ExamplePuzzle();
+            primaryStage.setScene(examplePuzzle.buildExampleScene());
             primaryStage.setMinWidth(720);
             primaryStage.setMinHeight(670);
             //Automatically stop the timer when exiting.
