@@ -275,7 +275,7 @@ public class ExamplePuzzle {
                             text.setText(button.getText());
 
                             //Check for valid input. The input depends on the size of the board.
-                            if (button.getText() != null)
+                            if (!text.getText().equals(""))
                                 if (Integer.valueOf(text.getText()) > sizeOfGrid) {
                                     text.setText("");
                                     new Alert(Alert.AlertType.ERROR,
@@ -703,7 +703,7 @@ public class ExamplePuzzle {
                     stage.setHeight(450);
                     launch.start(stage);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println("A problem with returning has occurred! Please restart the application!");
                 }
             }
         });

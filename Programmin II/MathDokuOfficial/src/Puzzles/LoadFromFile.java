@@ -32,6 +32,10 @@ import java.util.*;
 
 import static HelperClasses.Toolbox.timer;
 
+/*
+    Loads a puzzle from a file
+ */
+
 public class LoadFromFile {
     //The pane that holds all the components.
     private GridPane mainPane = new GridPane();
@@ -49,6 +53,9 @@ public class LoadFromFile {
     private boolean invalidFieldInput = false;
     //Showing mistakes button flag for turning mode on/off.
     private boolean mistakesFlag = false;
+    //Stores information about the timer.
+    private static int minutes = 0;
+    private static int seconds = 0;
     //Listener enabling the user to see his mistakes as he enters numbers.
     ChangeListener textFieldChangeL = new ChangeListener() {
         @Override
@@ -63,9 +70,6 @@ public class LoadFromFile {
             toolbox.checkForValidRows(sizeOfGrid, gameLogic);
         }
     };
-    //Stores information about the timer.
-    private static int minutes = 0;
-    private static int seconds = 0;
 
     public Scene buildSceneFromFile(String path) {
 
@@ -297,7 +301,7 @@ public class LoadFromFile {
                             text.setText(button.getText());
 
                             //Check for valid input. The input depends on the size of the board.
-                            if (button.getText() != null)
+                            if (!text.getText().equals(""))
                                 if (Integer.valueOf(text.getText()) > sizeOfGrid) {
                                     text.setText("");
                                     new Alert(Alert.AlertType.ERROR,
@@ -370,15 +374,16 @@ public class LoadFromFile {
 
             if (set.size() < fieldNumbers.size()) {
                 new Alert(Alert.AlertType.ERROR,
-                        "Invalid file selected. Please select a new file!")
+                        "Invalid file selected. Please return to Main Menu!")
                         .showAndWait();
+
             } else if (invalidFieldInput) {
                 new Alert(Alert.AlertType.ERROR,
-                        "Invalid file selected. Please select a new file!")
+                        "Invalid file selected. Please return to Main Menu!")
                         .showAndWait();
             }
         } catch (FileNotFoundException f) {
-            f.printStackTrace();
+            System.out.println("The file has not been found!");
         }
         //endregion
 
@@ -752,7 +757,7 @@ public class LoadFromFile {
                     stage.setHeight(450);
                     launch.start(stage);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println("A problem with returning has occurred! Please restart the application!");
                 }
             }
         });

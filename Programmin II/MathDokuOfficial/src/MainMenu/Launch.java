@@ -86,6 +86,7 @@ public class Launch extends Application {
                 Stage stage = (Stage) btnExit.getScene().getWindow();
                 stage.close();
             }
+            timer.cancel();
         });
 
         buttonBox.getChildren().addAll(btnLoadExample,
