@@ -2,6 +2,7 @@ package MainMenu;
 
 import Puzzles.ExamplePuzzle;
 import Puzzles.LoadFromFile;
+import Puzzles.LoadFromText;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,11 +10,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -125,6 +128,49 @@ public class Launch extends Application {
             //Automatically stop the timer when exiting.
             primaryStage.setOnCloseRequest(event -> {
                 timer.cancel();
+            });
+        });
+
+        //Change the scene to the puzzle loaded from a user text input.
+        btnLoadFromText.setOnMouseClicked(e -> {
+            //Create the input text pane.
+            Button btnDone = new Button("Done");
+            btnDone.setMinSize(60, 30);
+            TextArea inputText = new TextArea();
+            inputText.setMinHeight(385);
+            GridPane inputPane = new GridPane();
+            inputPane.setPadding(new Insets(5));
+            inputPane.setVgap(5);
+            inputPane.add(inputText, 0, 0, 2, 1);
+            inputPane.add(btnDone, 1, 1, 1, 1);
+
+            //Show the new scene containing the text area.
+            Scene inputScene = new Scene(inputPane, 250, 430);
+            Stage newWindow = new Stage();
+            newWindow.initModality(Modality.NONE);
+            newWindow.setTitle("Enter puzzle");
+            newWindow.setScene(inputScene);
+            newWindow.setResizable(false);
+            newWindow.show();
+
+            //Change the scene to the selected puzzle.
+            btnDone.setOnMouseClicked(f -> {
+                LoadFromText loadFromText = new LoadFromText();
+                primaryStage.setScene(loadFromText.buildSceneFromText(inputText.getText()));
+                primaryStage.setMinWidth(720);
+                primaryStage.setMinHeight(670);
+
+                //Close the input window after input is done.
+                newWindow.close();
+
+                //Delete the temp file.
+                File tempFile = new File("temp-storage.txt");
+                tempFile.delete();
+
+                //Automatically stop the timer when exiting.
+                primaryStage.setOnCloseRequest(event -> {
+                    timer.cancel();
+                });
             });
         });
 
