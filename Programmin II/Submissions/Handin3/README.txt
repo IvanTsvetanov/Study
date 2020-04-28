@@ -1,0 +1,1 @@
+To compile and run the application you need to compile and run the Launch class, which is in the MainMenu directory.

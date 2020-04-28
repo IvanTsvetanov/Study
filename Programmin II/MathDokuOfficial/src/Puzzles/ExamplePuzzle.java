@@ -8,11 +8,13 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -21,9 +23,7 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -646,14 +646,53 @@ public class ExamplePuzzle {
 
         //region Button Change Colors
         changeColors.setOnMouseClicked(e -> {
-            for(Cage cage : gameLogic.getCages()) {
+            for (Cage cage : gameLogic.getCages()) {
                 cage.setCageColor();
             }
         });
         //endregion
 
         Scene mainScene = new Scene(mainPane, 690, 600);
-        returnMenu.requestFocus();
+        gameLogic.getGameFields().get(0).requestFocus();
+
+        //region Navigating the Game Cells with arrow keys
+        EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                TextField focusedTextField = (TextField) mainScene.focusOwnerProperty().get();
+                int currIndex = gameLogic.getIndexOfGivenGameField(focusedTextField);
+
+                switch (event.getCode()) {
+                    case UP:
+                        if(currIndex - 1 > -1)
+                        gameLogic.getGameFields().get(currIndex - 1).requestFocus();
+                        break;
+                    case DOWN:
+                        if(currIndex + 1 < sizeOfGrid*sizeOfGrid)
+                        gameLogic.getGameFields().get(currIndex + 1).requestFocus();
+                        break;
+                    case LEFT:
+                        if(currIndex > sizeOfGrid)
+                        gameLogic.getGameFields().get(currIndex - sizeOfGrid).requestFocus();
+                        break;
+                    case RIGHT:
+                        if(currIndex <sizeOfGrid*sizeOfGrid - sizeOfGrid)
+                        gameLogic.getGameFields().get(currIndex + sizeOfGrid).requestFocus();
+                        break;
+                    case BACK_SPACE:
+                        gameLogic.getGameFields().get(currIndex).setText("");
+                        break;
+                }
+                event.consume();
+            }
+        };
+
+        for (TextField text : gameLogic.getGameFields()) {
+            text.addEventHandler(KeyEvent.KEY_PRESSED, keyListener);
+        }
+
+        //endregion
+
         return mainScene;
     }
 }

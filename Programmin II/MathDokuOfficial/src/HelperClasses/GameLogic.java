@@ -29,7 +29,6 @@ public class GameLogic {
     //Holds the specific values of the game fields.
     private int[][] valueHolder;
 
-
     //Sets the size of the game grid.
     public void setSize(int size) {
         this.size = size;
@@ -90,6 +89,14 @@ public class GameLogic {
     //Returns all the values of the game grid as a two-dimensional matrix
     public int[][] getValueHolder() {
         return valueHolder;
+    }
+
+    //Returns the index (in the arraylist) of a given game fields.
+    public int getIndexOfGivenGameField(TextField textField) {
+        for(int i = 0; i < getGameFields().size(); i++) {
+            if(getGameFields().get(i).equals(textField)) return i;
+        }
+        return 0;
     }
 
 }
