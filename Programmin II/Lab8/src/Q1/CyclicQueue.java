@@ -66,6 +66,12 @@ public class CyclicQueue implements NumberQueue {
         cq.enqueue(3);
         cq.enqueue(4);
         cq.enqueue(5);
+        cq.dequeue();
+        cq.dequeue();
+        cq.dequeue();
+        cq.dequeue();
+        cq.dequeue();
+        cq.dequeue();
         /*cq.enqueue(6);
         cq.dequeue();
         System.out.println(cq.isEmpty());*/

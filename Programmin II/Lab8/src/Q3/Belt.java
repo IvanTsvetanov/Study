@@ -10,39 +10,40 @@ public class Belt extends CyclicQueue {
 
     @Override
     public synchronized void enqueue(int enteredNumber) {
-        try {
-            if ((tailPointer + 1) % queue.length == headPointer) {
-                Thread.sleep(2000);
-                enqueue(enteredNumber);
+        if ((tailPointer + 1) % queue.length == headPointer) {
+            try {
+                wait();
             }
-            // Checks if we can enter an element.
-            // The check is done by looking if the pointer will overwrite unprocessed data.
-            if ((tailPointer + 1) % queue.length != headPointer) {
+        catch (Exception e)  {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        } }
+        else {
+            try {
                 tailPointer = (tailPointer + 1) % queue.length;
                 queue[tailPointer] = enteredNumber;
+                //notifyAll();
+            } catch (Exception ex) {
+                Thread.currentThread().interrupt();
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-
     }
 
     @Override
     public synchronized int dequeue() {
-        int toBeRemoved;
+        int toBeRemoved = 0;
         try {
             if (headPointer == tailPointer) {
-                Thread.sleep(2000);
-                dequeue();
+                wait();
+                return 0;
             }
             // Checks if we can delete an element.
             // The check is done by looking if the pointer will overwrite unprocessed data.
-            if (headPointer != tailPointer) {
+            else {
                 headPointer = (headPointer + 1) % queue.length;
                 toBeRemoved = queue[headPointer];
                 return toBeRemoved;
-            } else {
-                return 0;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

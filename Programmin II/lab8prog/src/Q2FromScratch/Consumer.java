@@ -1,4 +1,4 @@
-package Q3;
+package Q2FromScratch;
 
 import uk.ac.soton.ecs.comp1206.labtestlibrary.interfaces.threading.FactoryWorker;
 import uk.ac.soton.ecs.comp1206.labtestlibrary.interfaces.threading.NumberQueue;
@@ -20,15 +20,13 @@ public class Consumer extends FactoryWorker {
     // Runs the thread until it gets interrupted.
     @Override
     public void run() {
-        while (true) {
-            if(!Thread.currentThread().isInterrupted()) {
-                try {
-                    action();
-                } catch (Exception ex) {
-                    messageError();
-                }
+        while(!Thread.currentThread().isInterrupted())
+        {
+            try {
+                action();
+            } catch (Exception e) {
+                messageError();
             }
-            else break;
         }
     }
 
