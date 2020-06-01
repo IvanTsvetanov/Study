@@ -25,6 +25,7 @@ public class DAGSortTest {
 
         //Holds the inteded output
         int[] intededOrder = new int[] {0, 2, 1, 3};
+        int[] anotherIntededOrder = new int[] {0, 1, 2, 3};
 
         //Holds the topologically ordered DAG
         int[] topologicalOrder = new int[DAG.length];
@@ -50,7 +51,14 @@ public class DAGSortTest {
         }
 
         //Check if the topological ordering is correct
-        if(!Arrays.equals(intededOrder, topologicalOrder)) throw new Exception("The topological ordering is not correct!");
+        boolean flag = false;
+        if(!Arrays.equals(intededOrder, topologicalOrder)) {
+            flag = true;
+            throw new Exception("The topological ordering is not correct!");
+        }
+
+         if (!Arrays.equals(anotherIntededOrder, topologicalOrder) && flag)
+            throw new Exception("The topological ordering is not correct!");
     }
 
 
@@ -155,11 +163,6 @@ public class DAGSortTest {
     @Test
     public void graphWithOneNode() throws Exception {
         //Create the DAG
-        //The DAG has 4 rows (nodes)
-        //DAG[0] = {}
-        //DAG[1] = {}
-        //DAG[2] = {}
-        //DAG[3] = {}
         int[][] DAG = {
         };
 

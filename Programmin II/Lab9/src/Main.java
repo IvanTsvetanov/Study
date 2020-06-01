@@ -1,8 +1,11 @@
 public class Main {
     public static void main(String[] args) {
-        int[][] a = new int[0][];
-
-
+        int[][] a = {
+                {1, 2},
+                {3},
+                {3},
+                {}
+        };
 
         int[] b = new int[a.length];
 
@@ -12,7 +15,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println(b.length);
         for(int i : b) {
             System.out.println(i);
         }
