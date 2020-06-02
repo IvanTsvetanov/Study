@@ -1,3 +1,4 @@
+import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.lang.reflect.Array;
@@ -5,7 +6,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DAGSortTest {
+public class DAGSortTest extends TestCase {
 
     //Creates a simple DAG and checks if it is sorted properly.
     @Test
